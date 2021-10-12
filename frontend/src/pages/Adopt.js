@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Container, Grid} from '@mui/material/';
 import AdoptionCard from '../components/adoptionCard';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const sampleData = {
     "name" : "Catto",
@@ -15,6 +17,15 @@ const sampleData = {
     "availability": "Available",
 }
 
+const buttonStyle = {
+    backgroundColor: "#2196F3",
+    "&:hover": {
+        backgroundColor: "teal"
+    },
+    ripple: {
+        color: "white",
+    }
+}
 
 export default function Adopt() {
     const [animal, setAnimal] = useState(sampleData)
@@ -29,12 +40,16 @@ export default function Adopt() {
                 </Grid>
                 <Grid container justifyContent="center" sx={{marginTop: 1}}>
                     <Grid item xs={2} md={2} lg={2}>
-                        <Button>Left</Button>
+                        <Button sx={buttonStyle}>
+                            <ChevronLeftIcon sx={{color: "white"}}/>
+                        </Button>
                     </Grid>
                     <Grid item xs={2} md={1} lg={1}>
                     </Grid>
                     <Grid item xs={2} md={1} lg={1}>
-                        <Button>Right</Button>
+                        <Button sx={buttonStyle}>
+                            <ChevronRightIcon sx={{color: "white"}}/>
+                        </Button>
                     </Grid>
                 </Grid>
             </Container>

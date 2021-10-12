@@ -1,6 +1,18 @@
 import React from 'react';
 import { Button, Card, CardActions, CardContent, CardMedia, Checkbox, Typography } from '@mui/material/';
 
+const buttonStyle = {
+    backgroundColor: "teal", 
+    textTransform: "none",
+    "&:hover": {
+        backgroundColor: "teal"
+    },
+    ripple: {
+        color: "white",
+    }
+}
+
+
 export default function AdoptionCard(props) {
     const{ name, description, type, breed, dispositions, availability } = props.data
     
@@ -14,8 +26,8 @@ export default function AdoptionCard(props) {
                 <Typography variant="body2" color="text.secondary" component="div">Disposition:
                 {Object.entries(dispositions).map(([key,value]) =>
                     (value ? 
-                        (<Typography variant="body2" color="text.secondary" component="div">{key} <Checkbox size="small" disabled checked /></Typography>) : 
-                        (<Typography variant="body2" color="text.secondary" component="div">{key} <Checkbox size="small" disabled/></Typography>)
+                        (<Typography variant="body2" color="text.secondary" component="div">{key} <Checkbox size="small" sx={{padding:0}} disabled checked /></Typography>) : 
+                        (<Typography variant="body2" color="text.secondary" component="div">{key} <Checkbox size="small" sx={{padding:0}} disabled/></Typography>)
                     )
                 )}
                 </Typography>
@@ -25,7 +37,9 @@ export default function AdoptionCard(props) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small">Adopt</Button>
+                <Button size="small" sx={buttonStyle}>
+                    <Typography variant="body1" color="white">Adopt</Typography>
+                </Button>
             </CardActions>               
         </Card>
     );
