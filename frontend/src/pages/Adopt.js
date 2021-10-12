@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import axios from "axios"
 import { Button, Container, Grid} from '@mui/material/';
 import AdoptionCard from '../components/adoptionCard';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const sampleData = {
+    "id" : 1,
     "name" : "Catto",
     "description" : "chonky boy",
     "type": "Cat",
@@ -29,6 +31,16 @@ const buttonStyle = {
 
 export default function Adopt() {
     const [animal, setAnimal] = useState(sampleData)
+    const [dataID, setDataID] = useState(null)
+
+    useEffect(() => {
+        async function getAnimal() {
+            const res = await axios.get("")
+            setAnimal(res.data)
+            setDataID(res.data.id)
+        }
+        getAnimal();
+    }, []);
 
     return (
         <>
