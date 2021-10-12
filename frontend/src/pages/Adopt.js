@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, Container, Typography } from '@mui/material/';
+import { Button, Container, Grid} from '@mui/material/';
 import AdoptionCard from '../components/adoptionCard';
 
 const sampleData = {
@@ -7,7 +7,11 @@ const sampleData = {
     "description" : "chonky boy",
     "type": "Cat",
     "breed": "Tabby",
-    "disposition" : [],
+    "dispositions" :{
+        "Good with other animals" : false,
+        "Good with other children" : false,
+        "Animal must be leashed at all times" : true,
+    },
     "availability": "Available",
 }
 
@@ -18,16 +22,18 @@ export default function Adopt() {
     return (
         <>
             <Container>
-                <Grid container justifyContent="space-around" sx={{marginTop: 8}}>
+                <Grid container justifyContent="space-around" sx={{marginTop: 6}}>
                     <Grid item xs={8} md={6} lg={8}>
                         <AdoptionCard data={sampleData}/>
                     </Grid>
                 </Grid>
                 <Grid container justifyContent="center" sx={{marginTop: 1}}>
-                    <Grid item xs={2} md={1.5} lg={1.5}>
+                    <Grid item xs={2} md={2} lg={2}>
                         <Button>Left</Button>
                     </Grid>
-                    <Grid item xs={2} md={1.5} lg={1.5}>
+                    <Grid item xs={2} md={1} lg={1}>
+                    </Grid>
+                    <Grid item xs={2} md={1} lg={1}>
                         <Button>Right</Button>
                     </Grid>
                 </Grid>
@@ -35,13 +41,3 @@ export default function Adopt() {
         </>
     );
 }
-
-/*
-<Container>
-                <Grid container>
-                    <Grid item>
-                        <AdoptionCard data={sampleData}/>
-                    </Grid>
-                </Grid>
-            </Container>
-*/
