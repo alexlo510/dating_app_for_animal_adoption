@@ -24,10 +24,10 @@ export default function AdoptionCard(props) {
                 <Typography variant="body2" color="text.secondary" component="div">Type: {type}</Typography>
                 <Typography variant="body2" color="text.secondary" component="div">Breed: {breed}</Typography>
                 <Typography variant="body2" color="text.secondary" component="div">Disposition:
-                {Object.entries(dispositions).map(([key,value]) =>
+                {Object.entries(dispositions).map(([key, value], index) =>
                     (value ? 
-                        (<Typography variant="body2" color="text.secondary" component="div">{key} <Checkbox size="small" sx={{padding:0}} disabled checked /></Typography>) : 
-                        (<Typography variant="body2" color="text.secondary" component="div">{key} <Checkbox size="small" sx={{padding:0}} disabled/></Typography>)
+                        (<Typography key={index} variant="body2" color="text.secondary" component="div">{key} <Checkbox size="small" sx={{padding:0}} disabled checked /></Typography>) : 
+                        (<Typography key={index} variant="body2" color="text.secondary" component="div">{key} <Checkbox size="small" sx={{padding:0}} disabled/></Typography>)
                     )
                 )}
                 </Typography>
