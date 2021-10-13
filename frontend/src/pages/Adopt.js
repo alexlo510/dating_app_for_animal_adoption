@@ -45,7 +45,7 @@ const buttonStyle = {
 
 export default function Adopt() {
     const [animal, setAnimal] = useState(sampleData)
-    const [dataID, setDataID] = useState(1)
+    const [dataID, setDataID] = useState(sampleData["id"])
     const [disableButtons, setDisableButtons] = useState(false)
     
     useEffect(() => {
