@@ -102,7 +102,7 @@ export default function Adopt() {
         <>
             <Container>
                 <AdoptionSearchBar/>
-                <Grid container justifyContent="space-around" sx={{marginTop: 4}}>
+                <Grid container justifyContent="space-around" sx={{marginTop: 2}}>
                     <Grid item xs={8} md={6} lg={8}>
                         {animal && <AdoptionCard data={animal}/>}
                     </Grid>
