@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios"
 import { Button, Container, Grid } from '@mui/material/';
-import AdoptionCard from '../components/adoptionCard';
+import AdoptionCard from '../components/AdoptionCard';
+import AdoptionSearchBar from '../components/AdoptionSearchBar';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
@@ -100,7 +101,8 @@ export default function Adopt() {
     return (
         <>
             <Container>
-                <Grid container justifyContent="space-around" sx={{marginTop: 6}}>
+                <AdoptionSearchBar/>
+                <Grid container justifyContent="space-around" sx={{marginTop: 4}}>
                     <Grid item xs={8} md={6} lg={8}>
                         {animal && <AdoptionCard data={animal}/>}
                     </Grid>
