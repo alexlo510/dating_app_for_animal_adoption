@@ -15,6 +15,13 @@ const buttonStyle = {
 
 export default function AdoptionCard(props) {
     const{ name, description, type, breed, dispositions, availability } = props.data
+
+    function handleAdoptClick(data) {
+        console.log("adopt", data);
+        // ?? move this to the adopt page??? 
+        // pass data to db to change availability and note down which user adopted 
+        // refresh page? move to different page? or change availability in db, then the page somehow rerenders?
+    } 
     
     return (
         <Card sx={{}}>
@@ -37,9 +44,11 @@ export default function AdoptionCard(props) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" sx={buttonStyle}>
+                {availability.toLowerCase() === "available" ?
+                <Button size="small" sx={buttonStyle} onClick={() => handleAdoptClick(props.data)}>
                     <Typography variant="body1" color="white">Adopt</Typography>
                 </Button>
+                : <div></div>}
             </CardActions>               
         </Card>
     );
