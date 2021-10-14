@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Button, FormControl, Grid, InputLabel, MenuItem, TextField, Select, Typography } from '@mui/material/';
+import { Button, FormControl, Grid, InputLabel, MenuItem, TextField, Select } from '@mui/material/';
 
 const textFieldStyle = {
     marginRight: 2,
@@ -13,17 +13,28 @@ const buttonStyle = {
 const selectStyle = {
     marginRight: 2,
     marginTop: 1,
-    minWidth: 125,}
+    minWidth: 125,
+    maxWidth: 125,
+}
+
+const dateStyle = {
+    width: 180,
+    marginTop: 1,
+    marginRight: 2,
+}
 
 export default function AdoptionSearchBar() {
 
     const [type, setType] = useState('')
     const [breed, setBreed] = useState('')
     const [disposition, setDisposition] = useState('')
+    const [date, setDate] = useState('')
 
 
-    function handleSubmit(){
-
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        console.log(type, breed, disposition, date);
+        // call a function on the adopt page, passing in these parameters? 
     }
 
     return (
@@ -54,6 +65,15 @@ export default function AdoptionSearchBar() {
                             <MenuItem value={"Animals must be leashed at all times"}>Animals Must Be Leashed at All Times</MenuItem>
                         </Select>
                         </FormControl>
+                        <TextField
+                            label="Date Created"
+                            type="date"
+                            sx={dateStyle}
+                            InputLabelProps={{
+                            shrink: true,
+                            }}
+                            onChange={(e) => setDate(e.target.value)}
+                        />
                         <Button type="submit" color="primary" variant="contained" sx={buttonStyle}>Search</Button>
                     </form>
                 </Grid>
