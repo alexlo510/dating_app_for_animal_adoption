@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios"
-import { Button, Container, Grid} from '@mui/material/';
+import { Button, Container, Grid } from '@mui/material/';
 import AdoptionCard from '../components/adoptionCard';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -30,7 +30,7 @@ const sampleData2 = {
         "Good with other children" : true,
         "Animal must be leashed at all times" : false,
     },
-    "availability": "Available",
+    "availability": "available",
 }
 
 const buttonStyle = {
@@ -77,10 +77,21 @@ export default function Adopt() {
             console.log(err);
         }
 
-        setAnimal(sampleData2) // delete only used for testing
-        //setDataID(sampleData2["id"]) // delete only used for testing
+        // delete from here
+        if (fetchID === sampleData2["id"]) {
+            setAnimal(sampleData2) // delete only used for testing
+            setDataID(sampleData2["id"]) // delete only used for testing
+        }
+
+        if (fetchID === sampleData["id"]) {
+            setAnimal(sampleData) // delete only used for testing
+            setDataID(sampleData["id"]) // delete only used for testing
+        }
+
         console.log("new data");
         console.log("enable");
+        // delete to here 
+        
         // enable button
         setDisableButtons(prevState => !prevState)
 
