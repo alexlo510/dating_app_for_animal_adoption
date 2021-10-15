@@ -14,7 +14,7 @@ const buttonStyle = {
 
 
 export default function AdoptionCard(props) {
-    const{ name, description, type, breed, dispositions, availability } = props.data
+    const{ name, description, type, breed, dispositions, availability } = props
 
     function handleAdoptClick(data) {
         console.log("adopt", data);
