@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios"
 import { Button, Container, Grid } from '@mui/material/';
 import AdoptionCard from '../components/AdoptionCard';
+import AlertMessage from '../components/AlertMessage';
 import AdoptionSearchBar from '../components/AdoptionSearchBar';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -34,7 +35,7 @@ const sampleData = [{
 },
 {
     "id" : 3,
-    "name" : "Mouse",
+    "name" : "Mousie",
     "description" : "cheese head",
     "type": "mouse",
     "breed": "field mouse",
@@ -62,6 +63,8 @@ export default function Adopt() {
     const [animal, setAnimal] = useState("")
     const [index, setIndex] = useState("")
     const [disableButtons, setDisableButtons] = useState(false)
+    const [adoptSuccess, setAdoptSuccess] = useState(false)
+    const [adoptFail, setAdoptFail] = useState(false)
     
     useEffect(() => {
         try {
@@ -91,9 +94,11 @@ export default function Adopt() {
                 if (fetchID === -1) {
                     fetchID = data.length - 1
                 }
-
+                
                 setAnimal(data[fetchID])
                 setIndex(fetchID)
+                setAdoptSuccess(false)
+                setAdoptFail(false)
             }
             await fetchNewAnimal(fetchID);
             setDisableButtons(prevState => !prevState) // enable button
@@ -101,7 +106,16 @@ export default function Adopt() {
             console.log(err);
             setDisableButtons(prevState => !prevState) // enable button
         }
-    } 
+    }
+
+    function handleAdoptClick(animalID) {
+        console.log("Adopting", animalID);
+        //setAdoptSuccess(true);
+        setAdoptFail(true);
+
+        // send post request to server so server can change availability to unavail 
+        // fetch updated data for the animal. display alert that says adopted? refresh page?
+    }
 
     return (
         <>
@@ -109,7 +123,7 @@ export default function Adopt() {
                 <AdoptionSearchBar/>
                 <Grid container justifyContent="space-around" sx={{marginTop: 2}}>
                     <Grid item xs={8} md={6} lg={8}>
-                        {animal && <AdoptionCard {...animal}/>}
+                        {animal && <AdoptionCard {...animal} handleAdoptClick={handleAdoptClick}/>}
                     </Grid>
                 </Grid>
                 <Grid container justifyContent="center" sx={{marginTop: 1}}>
@@ -126,6 +140,8 @@ export default function Adopt() {
                         </Button>
                     </Grid>
                 </Grid>
+                { adoptSuccess ? <AlertMessage message="Adopt Sucessful" severity="success" reset={setAdoptSuccess}/> : null}
+                { adoptFail ? <AlertMessage message="Adopt Fail" severity="error" reset={setAdoptFail}/> : null}
             </Container>
         </>
     );
