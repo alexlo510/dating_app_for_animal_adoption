@@ -6,33 +6,46 @@ import AdoptionSearchBar from '../components/AdoptionSearchBar';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
-const sampleData = {
+const sampleData = [{
     "id" : 1,
     "name" : "Catto",
     "description" : "chonky boy",
     "type": "Cat",
     "breed": "Tabby",
-    "dispositions" :{
+    "disposition" :{
         "Good with other animals" : false,
         "Good with other children" : false,
         "Animal must be leashed at all times" : true,
     },
     "availability": "Available",
-}
-
-const sampleData2 = {
+},
+{
     "id" : 2,
     "name" : "Doggo",
     "description" : "Good boy",
     "type": "Dog",
     "breed": "Shiba",
-    "dispositions" :{
+    "disposition" :{
+        "Good with other animals" : true,
+        "Good with other children" : true,
+        "Animal must be leashed at all times" : false,
+    },
+    "availability": "available",
+},
+{
+    "id" : 3,
+    "name" : "Mouse",
+    "description" : "cheese head",
+    "type": "mouse",
+    "breed": "field mouse",
+    "disposition" :{
         "Good with other animals" : true,
         "Good with other children" : true,
         "Animal must be leashed at all times" : false,
     },
     "availability": "available",
 }
+]
 
 const buttonStyle = {
     backgroundColor: "#2196F3",
@@ -45,16 +58,19 @@ const buttonStyle = {
 }
 
 export default function Adopt() {
-    const [animal, setAnimal] = useState(sampleData)
-    const [dataID, setDataID] = useState(sampleData["id"])
+    const [data, setData] = useState([])
+    const [animal, setAnimal] = useState("")
+    const [index, setIndex] = useState("")
     const [disableButtons, setDisableButtons] = useState(false)
     
     useEffect(() => {
         try {
             async function fetchAnimal() {
-                const res = await axios.get("") // replace with server url
-                setAnimal(res.data)
-                setDataID(res.data["id"])
+                const res = await axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
+                console.log(res.data);
+                setData(res.data)
+                setAnimal(res.data[res.data.length - 1]) // set to the latest animal
+                setIndex(res.data.length - 1) // set the index of the animal 
             }
             fetchAnimal();
         } catch (err) {
@@ -62,40 +78,29 @@ export default function Adopt() {
         }
     }, []);
 
-    function handleClick(fetchID) {
-        console.log(fetchID); // test
-        // disable buttons
-        setDisableButtons(prevState => !prevState)
-        console.log("disable");
+    async function handleClick(fetchID) {
+        setDisableButtons(prevState => !prevState) // disable buttons        
         try {
             async function fetchNewAnimal(fetchID) {
-                const res = await axios.post("", [fetchID]) // replace with server url
-                setAnimal(res.data)
-                setDataID(res.data["id"])
+                const res = await axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
+                setData(res.data)
+
+                if (fetchID >= data.length) {
+                    fetchID = 0
+                }
+                if (fetchID === -1) {
+                    fetchID = data.length - 1
+                }
+
+                setAnimal(data[fetchID])
+                setIndex(fetchID)
             }
-            fetchNewAnimal(fetchID);
+            await fetchNewAnimal(fetchID);
+            setDisableButtons(prevState => !prevState) // enable button
         } catch (err) {
             console.log(err);
+            setDisableButtons(prevState => !prevState) // enable button
         }
-
-        // delete from here
-        if (fetchID === sampleData2["id"]) {
-            setAnimal(sampleData2) // delete only used for testing
-            setDataID(sampleData2["id"]) // delete only used for testing
-        }
-
-        if (fetchID === sampleData["id"]) {
-            setAnimal(sampleData) // delete only used for testing
-            setDataID(sampleData["id"]) // delete only used for testing
-        }
-
-        console.log("new data");
-        console.log("enable");
-        // delete to here 
-        
-        // enable button
-        setDisableButtons(prevState => !prevState)
-
     } 
 
     return (
@@ -109,14 +114,14 @@ export default function Adopt() {
                 </Grid>
                 <Grid container justifyContent="center" sx={{marginTop: 1}}>
                     <Grid item xs={2} md={2} lg={2}>
-                        <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(dataID - 1)}>
+                        <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index - 1)}>
                             <ChevronLeftIcon sx={{color: "white"}}/>
                         </Button>
                     </Grid>
                     <Grid item xs={2} md={1} lg={1}>
                     </Grid>
                     <Grid item xs={2} md={1} lg={1}>
-                        <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(dataID + 1)}>
+                        <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index + 1)}>
                             <ChevronRightIcon sx={{color: "white"}}/>
                         </Button>
                     </Grid>
