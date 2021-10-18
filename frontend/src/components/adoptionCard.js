@@ -1,5 +1,7 @@
 import React from 'react';
-import { Button, Card, CardActions, CardContent, CardMedia, Checkbox, Typography } from '@mui/material/';
+import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material/';
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 
 const buttonStyle = {
     backgroundColor: "teal", 
@@ -30,14 +32,10 @@ export default function AdoptionCard(props) {
                 <Typography gutterBottom variant="h5" component="div">{name}</Typography>
                 <Typography variant="body2" color="text.secondary" component="div">Type: {type}</Typography>
                 <Typography variant="body2" color="text.secondary" component="div">Breed: {breed}</Typography>
-                <Typography variant="body2" color="text.secondary" component="div">Disposition:
-                {Object.entries(dispositions).map(([key, value], index) =>
-                    (value ? 
-                        (<Typography key={index} variant="body2" color="text.secondary" component="div">{key} <Checkbox size="small" sx={{padding:0}} disabled checked /></Typography>) : 
-                        (<Typography key={index} variant="body2" color="text.secondary" component="div">{key} <Checkbox size="small" sx={{padding:0}} disabled/></Typography>)
-                    )
-                )}
-                </Typography>
+                <Typography variant="body2" color="text.secondary" component="div">Disposition: </Typography>
+                {Object.entries(dispositions).map(([key, value], index) => 
+                    <Typography key={index} variant="body2" color="text.secondary" component="div">{key}
+                        {value ? <CheckBoxOutlinedIcon fontSize="small"/> : <CheckBoxOutlineBlankOutlinedIcon fontSize="small"/>}</Typography>)}
                 <Typography gutterBottom variant="body2" color="text.secondary" component="div">Availability: {availability}</Typography>
                 <Typography variant="body2" color="text.secondary" component="div">
                     {description}
