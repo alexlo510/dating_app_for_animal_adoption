@@ -1,5 +1,4 @@
 import React from 'react';
-import './Navbar.css';
 import { Typography, AppBar, Button, List, ListItem, Toolbar, useMediaQuery } from '@mui/material/';
 import { Link } from 'react-router-dom';
 import { theme } from './Theme.js';
