@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from "axios"
+import Axios from "axios"
 import { Button, Container, Grid } from '@mui/material/';
 import AdoptionCard from '../components/AdoptionCard';
 import AlertMessage from '../components/AlertMessage';
@@ -69,7 +69,7 @@ export default function Adopt() {
     useEffect(() => {
         try {
             async function fetchAnimal() {
-                const res = await axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
+                const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
                 console.log(res.data);
                 setData(res.data)
                 setAnimal(res.data[res.data.length - 1]) // set to the latest animal
@@ -85,7 +85,7 @@ export default function Adopt() {
         setDisableButtons(prevState => !prevState) // disable buttons        
         try {
             async function fetchNewAnimal(fetchID) {
-                const res = await axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
+                const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
                 setData(res.data)
 
                 if (fetchID >= data.length) {
