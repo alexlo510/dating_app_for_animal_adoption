@@ -108,13 +108,20 @@ export default function Adopt() {
         }
     }
 
-    function handleAdoptClick(animalID) {
-        console.log("Adopting", animalID);
+    async function handleAdoptClick(animalID) {
+        console.log("Adopting", animalID); // remove after testing
         //setAdoptSuccess(true);
-        setAdoptFail(true);
+        //setAdoptFail(true);
 
         // send post request to server so server can change availability to unavail 
         // fetch updated data for the animal. display alert that says adopted? refresh page?
+        try {
+            const res = await Axios.post("", animalID)
+            console.log(res);
+            setAdoptSuccess(true);
+        } catch (err) {
+            setAdoptFail(true);
+        }
     }
 
     return (
