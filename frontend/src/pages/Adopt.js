@@ -70,7 +70,7 @@ export default function Adopt() {
         try {
             async function fetchAnimal() {
                 const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
-                console.log(res.data);
+                console.log(res.data); // remove after testing
                 setData(res.data)
                 setAnimal(res.data[res.data.length - 1]) // set to the latest animal
                 setIndex(res.data.length - 1) // set the index of the animal 
@@ -116,9 +116,11 @@ export default function Adopt() {
         // send post request to server so server can change availability to unavail 
         // fetch updated data for the animal. display alert that says adopted? refresh page?
         try {
-            const res = await Axios.post("", animalID)
+            const payload = {"availability" : "Pending"}
+            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalID}`, payload)
             console.log(res);
             setAdoptSuccess(true);
+            setAnimal({...animal, "availability":"Pending"}) // switch to just set res data? 
         } catch (err) {
             setAdoptFail(true);
         }
