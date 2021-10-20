@@ -9,12 +9,14 @@ export default function FileUploadComponent() {
 
     const handleUpload = async (e) => {
         e.preventDefault()
-        const data = new FormData()
-        // append additional data here if needed
-        data.append("file", file);
         try {
+            if (file !== '') {
+            const data = new FormData()
+            // append additional data here if needed
+            data.append("file", file);
             const res = await Axios.post("https://httpbin.org/anything", data) // replace URL with server url
             console.log(res);
+            }
         } catch (error) {
             console.log(error);
         }
