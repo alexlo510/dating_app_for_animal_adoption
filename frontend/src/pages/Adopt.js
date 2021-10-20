@@ -110,17 +110,15 @@ export default function Adopt() {
 
     async function handleAdoptClick(animalID) {
         console.log("Adopting", animalID); // remove after testing
-        //setAdoptSuccess(true);
-        //setAdoptFail(true);
-
-        // send post request to server so server can change availability to unavail 
-        // fetch updated data for the animal. display alert that says adopted? refresh page?
         try {
             const payload = {"availability" : "Pending"}
             const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalID}`, payload)
             console.log(res);
             setAdoptSuccess(true);
             setAnimal({...animal, "availability":"Pending"}) // switch to just set res data? 
+
+            // also pass in the user who adopted the pet. 
+            
         } catch (err) {
             setAdoptFail(true);
         }
