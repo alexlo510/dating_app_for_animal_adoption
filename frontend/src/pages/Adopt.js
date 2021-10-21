@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Axios from "axios"
-import { Button, Container, Grid } from '@mui/material/';
+import { Button, CircularProgress, Container, Grid } from '@mui/material/';
 import AdoptionCard from '../components/AdoptionCard';
 import AlertMessage from '../components/AlertMessage';
 import AdoptionSearchBar from '../components/AdoptionSearchBar';
@@ -130,21 +130,22 @@ export default function Adopt() {
                 <AdoptionSearchBar/>
                 <Grid container justifyContent="space-around" sx={{marginTop: 2}}>
                     <Grid item xs={8} md={6} lg={8}>
+                        {!animal && <div style={{display: 'flex', justifyContent: 'center'}}><CircularProgress/></div>}
                         {animal && <AdoptionCard {...animal} handleAdoptClick={handleAdoptClick}/>}
                     </Grid>
                 </Grid>
                 <Grid container justifyContent="center" sx={{marginTop: 1}}>
                     <Grid item xs={2} md={2} lg={2}>
-                        <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index - 1)}>
+                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index - 1)}>
                             <ChevronLeftIcon sx={{color: "white"}}/>
-                        </Button>
+                        </Button>}
                     </Grid>
                     <Grid item xs={2} md={1} lg={1}>
                     </Grid>
                     <Grid item xs={2} md={1} lg={1}>
-                        <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index + 1)}>
+                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index + 1)}>
                             <ChevronRightIcon sx={{color: "white"}}/>
-                        </Button>
+                        </Button>}
                     </Grid>
                 </Grid>
                 { adoptSuccess ? <AlertMessage message="Adopt Sucessful" severity="success" reset={setAdoptSuccess}/> : null}
