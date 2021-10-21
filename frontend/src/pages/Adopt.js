@@ -111,7 +111,7 @@ export default function Adopt() {
     async function handleAdoptClick(animalID) {
         console.log("Adopting", animalID); // remove after testing
         try {
-            const payload = {"availability" : "Pending"}
+            const payload = {availability : "Pending"}
             const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalID}`, payload)
             console.log(res);
             setAdoptSuccess(true);
