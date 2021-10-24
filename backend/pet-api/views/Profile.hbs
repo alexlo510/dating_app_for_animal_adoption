@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .bigtext {
+            font: bold 16px Arial;
+            text-decoration: none;
+        }
+        .smalltextbold {
+            font: bold 12px Arial;
+            text-decoration: none;
+        }
+        .smalltext {
+            font: 12px Arial;
+            text-decoration: none;
+        }
+
+    </style>
+    <title>OSU CS493 - Final Assignment</title>
+</head>
+<body>
+    <h1 class="bigtext"><center>OSU CS493 - Final Assignment Profle Page</center></h1>
+
+    <h4 class="smalltextbold">Display Name:</div> <div class="smalltext"> {{render_displayname}}</div></h4>
+    <p></p>
+    <h4 class="smalltextbold">First Name:</div> <div class="smalltext"> {{render_firstname}}</div></h4>
+    <p></p>
+    <h4 class="smalltextbold">Last Name:</div> <div class="smalltext"> {{render_lastname}}</div></h4>
+    <p></p>
+    <h4 class="smalltextbold">User Id:</div> <div class="smalltext"> {{render_user_id}}</div></h4>
+    <p></p>
+    <h4 class="smalltextbold">JWT Token:</div> <div class="smalltext"> {{render_id_token}}</div></h4>
+    <p></p>
+    <h1 class="bigtext"><center>*****DO NOT REFRESH*****</center></h1>
+    <p></p>
+    <a href="{{render_home_url}}">Return to Home Page</a>
+</body>
+</html>
