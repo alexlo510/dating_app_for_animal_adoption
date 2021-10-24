@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Axios from "axios"
-import { Button, Container, Grid } from '@mui/material/';
+import { Button, CircularProgress, Container, Grid } from '@mui/material/';
 import AdoptionCard from '../components/AdoptionCard';
 import AlertMessage from '../components/AlertMessage';
 import AdoptionSearchBar from '../components/AdoptionSearchBar';
@@ -70,7 +70,7 @@ export default function Adopt() {
         try {
             async function fetchAnimal() {
                 const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
-                console.log(res.data);
+                console.log(res.data); // remove after testing
                 setData(res.data)
                 setAnimal(res.data[res.data.length - 1]) // set to the latest animal
                 setIndex(res.data.length - 1) // set the index of the animal 
@@ -110,15 +110,15 @@ export default function Adopt() {
 
     async function handleAdoptClick(animalID) {
         console.log("Adopting", animalID); // remove after testing
-        //setAdoptSuccess(true);
-        //setAdoptFail(true);
-
-        // send post request to server so server can change availability to unavail 
-        // fetch updated data for the animal. display alert that says adopted? refresh page?
         try {
-            const res = await Axios.post("", animalID)
+            const payload = {availability : "Pending"}
+            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalID}`, payload)
             console.log(res);
             setAdoptSuccess(true);
+            setAnimal({...animal, "availability":"Pending"}) // switch to just set res data? 
+
+            // also pass in the user who adopted the pet. 
+            
         } catch (err) {
             setAdoptFail(true);
         }
@@ -130,21 +130,22 @@ export default function Adopt() {
                 <AdoptionSearchBar/>
                 <Grid container justifyContent="space-around" sx={{marginTop: 2}}>
                     <Grid item xs={8} md={6} lg={8}>
+                        {!animal && <div style={{display: 'flex', justifyContent: 'center'}}><CircularProgress/></div>}
                         {animal && <AdoptionCard {...animal} handleAdoptClick={handleAdoptClick}/>}
                     </Grid>
                 </Grid>
                 <Grid container justifyContent="center" sx={{marginTop: 1}}>
                     <Grid item xs={2} md={2} lg={2}>
-                        <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index - 1)}>
+                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index - 1)}>
                             <ChevronLeftIcon sx={{color: "white"}}/>
-                        </Button>
+                        </Button>}
                     </Grid>
                     <Grid item xs={2} md={1} lg={1}>
                     </Grid>
                     <Grid item xs={2} md={1} lg={1}>
-                        <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index + 1)}>
+                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index + 1)}>
                             <ChevronRightIcon sx={{color: "white"}}/>
-                        </Button>
+                        </Button>}
                     </Grid>
                 </Grid>
                 { adoptSuccess ? <AlertMessage message="Adopt Sucessful" severity="success" reset={setAdoptSuccess}/> : null}
