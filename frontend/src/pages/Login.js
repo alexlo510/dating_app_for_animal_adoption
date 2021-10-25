@@ -46,8 +46,12 @@ export default function Login() {
         console.log(username, password);
     }
 
-    const responseGoogle = (response) => {
-        console.log(response);
+    const responseGoogleSuccess = (response) => {
+        console.log("Success", response);
+    }
+
+    const responseGoogleFailure = (response) => {
+        console.log("Failure", response);
     }
 
     return (
@@ -66,14 +70,12 @@ export default function Login() {
                         />
                         <Button type="submit" color="primary" variant="contained" fullWidth sx={buttonStyle}>Login</Button>
                         <GoogleLogin
-                        clientId="test"
+                        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                         render={renderProps => (
-                            <Button variant="contained" fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} sx={googleButtonStyle}
-                            startIcon={<FcGoogle/>}
-                            >Login with Google</Button>
+                            <Button variant="contained" fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} sx={googleButtonStyle} startIcon={<FcGoogle/>}>Login with Google</Button>
                         )}
-                        onSuccess={responseGoogle}
-                        onFailure={responseGoogle}
+                        onSuccess={responseGoogleSuccess}
+                        onFailure={responseGoogleFailure}
                         cookiePolicy={'single_host_origin'}
                         />
                     </form>
