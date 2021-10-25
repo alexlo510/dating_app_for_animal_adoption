@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { Button, Container, Paper, TextField, Typography } from '@mui/material/';
 import { Link } from "react-router-dom";
 import { GoogleLogin } from 'react-google-login';
+import {FcGoogle} from 'react-icons/fc';
 
 const paperStyle = {
     display: 'flex',
@@ -24,6 +25,15 @@ const buttonStyle = {
 const signUpLinkStyle = {
     textDecoration: "none",
     color: "blue",
+}
+
+const googleButtonStyle = {
+    marginTop: 1, 
+    backgroundColor: "white", 
+    color: "gray",
+    "&:hover": {
+        background: "none",
+      }
 }
 
 export default function Login() {
@@ -58,8 +68,9 @@ export default function Login() {
                         <GoogleLogin
                         clientId="test"
                         render={renderProps => (
-                            <Button color="primary" variant="contained" fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} sx={{marginTop: 1}
-                            }>Login with Google</Button>
+                            <Button variant="contained" fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} sx={googleButtonStyle}
+                            startIcon={<FcGoogle/>}
+                            >Login with Google</Button>
                         )}
                         onSuccess={responseGoogle}
                         onFailure={responseGoogle}
