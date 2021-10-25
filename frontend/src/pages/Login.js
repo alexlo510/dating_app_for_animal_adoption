@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { Button, Container, Paper, TextField, Typography } from '@mui/material/';
 import { Link } from "react-router-dom";
+import { GoogleLogin } from 'react-google-login';
 
 const paperStyle = {
     display: 'flex',
@@ -35,6 +36,10 @@ export default function Login() {
         console.log(username, password);
     }
 
+    const responseGoogle = (response) => {
+        console.log(response);
+    }
+
     return (
         <>
             <Container maxWidth="sm">
@@ -50,6 +55,16 @@ export default function Login() {
                             variant="standard" name="password" type="password" required fullWidth label="Password" sx={textFieldStyle}
                         />
                         <Button type="submit" color="primary" variant="contained" fullWidth sx={buttonStyle}>Login</Button>
+                        <GoogleLogin
+                        clientId="test"
+                        render={renderProps => (
+                            <Button color="primary" variant="contained" fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} sx={{marginTop: 1}
+                            }>Login with Google</Button>
+                        )}
+                        onSuccess={responseGoogle}
+                        onFailure={responseGoogle}
+                        cookiePolicy={'single_host_origin'}
+                        />
                     </form>
                     <Typography variant="caption">Need an account? 
                         <Link to="/signUp" style={signUpLinkStyle}> Sign Up</Link>
