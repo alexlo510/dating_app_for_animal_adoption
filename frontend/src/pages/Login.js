@@ -84,6 +84,8 @@ export default function Login() {
                         onSuccess={responseGoogleSuccess}
                         onFailure={responseGoogleFailure}
                         cookiePolicy={'single_host_origin'}
+                        uxMode="redirect"
+                        redirectUri="http://localhost:3000/login"
                         />
                     </form>
                     <Typography variant="caption">Need an account? 
