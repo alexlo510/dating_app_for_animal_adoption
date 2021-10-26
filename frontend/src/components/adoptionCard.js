@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material/';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
-import { useUserContext } from '../components/UserContext.js';
+import { useUserContext } from './UserContext.js';
 
 const buttonStyle = {
     backgroundColor: "teal", 
