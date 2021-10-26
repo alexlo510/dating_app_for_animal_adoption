@@ -3,6 +3,7 @@ import { Typography, AppBar, Button, List, ListItem, Toolbar, useMediaQuery } fr
 import { Link } from 'react-router-dom';
 import { theme } from './Theme.js';
 import NavDrawer from './NavDrawer.js';
+import { useUserContext } from './UserContext.js';
 
 const linkStyle = {
     textDecoration: "none",
@@ -43,7 +44,14 @@ export const navLinks = [
 ]
 
 export default function Navbar() {
-    const mobileView = useMediaQuery(theme.breakpoints.down("sm"));    
+    const mobileView = useMediaQuery(theme.breakpoints.down("sm"));
+    const { user, setUser } = useUserContext();
+
+    const handleLogout = () => {
+        // handle logout
+        setUser(null)
+    }
+
     return (
         <AppBar className="navbar" position ="static">
             <Toolbar sx={{backgroundColor: "teal"}}>
@@ -56,15 +64,23 @@ export default function Navbar() {
                     {navLinks.map((navLink) => (
                         <ListItem key={navLink.id}>
                             <Link to={navLink.path} style={linkStyle}>
-                                {(navLink.path === "/signUp" || navLink.path === "/login" ? 
-                                    (<Button variant="contained" sx={{...buttonStyle}}>
+                                {(navLink.path === "/signUp" || navLink.path === "/login" ?
+                                    (!user ? <Button variant="contained" sx={{...buttonStyle}}>
                                         <Typography variant="h6" sx={{...wordStyle}}>{navLink.title}</Typography>
-                                    </Button>)
+                                    </Button> : null)
                                     : (<Typography variant="h6" sx={{...wordStyle}}>{navLink.title}</Typography>)
                                 )}
                             </Link>
                         </ListItem>
                     ))}
+                    {user ? 
+                        <ListItem>
+                            <Button variant="contained" sx={{...buttonStyle}}>
+                                <Typography variant="h6" sx={{...wordStyle}} onClick={handleLogout}>Logout</Typography>
+                            </Button>
+                        </ListItem> 
+                    : null
+                    }
                 </List>
                 )}
             </Toolbar>
