@@ -6,6 +6,7 @@ import AlertMessage from '../components/AlertMessage';
 import AdoptionSearchBar from '../components/AdoptionSearchBar';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { useUserContext } from '../components/UserContext.js';
 
 const sampleData = [{
     "id" : 1,
@@ -65,6 +66,7 @@ export default function Adopt() {
     const [disableButtons, setDisableButtons] = useState(false)
     const [adoptSuccess, setAdoptSuccess] = useState(false)
     const [adoptFail, setAdoptFail] = useState(false)
+    const { user } = useUserContext();
     
     useEffect(() => {
         try {
