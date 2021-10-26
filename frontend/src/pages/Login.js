@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import Axios from "axios"
 import { Button, Container, Paper, TextField, Typography } from '@mui/material/';
 import { Link } from "react-router-dom";
 import { GoogleLogin } from 'react-google-login';
@@ -48,6 +49,12 @@ export default function Login() {
 
     const responseGoogleSuccess = (response) => {
         console.log("Success", response);
+        Axios.post("", {tokenId: response.tokenId}
+        ).then(response => {
+            console.log("Login Success", response);
+            // get the jwt for the user and the user's information. 
+            // store in a context, go back to homepage. 
+        });
     }
 
     const responseGoogleFailure = (response) => {
