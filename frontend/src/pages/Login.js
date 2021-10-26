@@ -63,15 +63,17 @@ export default function Login() {
     // }
 
     const handleGoogleLogin = () => {
-        try {
-            console.log("logging in");
-            Axios.post("").then(
-                response => {
-                    console.log("Login Success", response);
-            });
-        } catch (err) {
-            console.log(err);
-        }
+        // try {
+        //     console.log("logging in");
+        //     Axios.post("").then(
+        //         response => {
+        //             console.log("Login Success", response);
+        //     });
+        // } catch (err) {
+        //     console.log(err);
+        // }
+        const googleAuthUrl = ""
+        window.open(googleAuthUrl, "_self")
     }
 
     return (
