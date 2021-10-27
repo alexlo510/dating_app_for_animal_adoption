@@ -10,7 +10,7 @@ export const animalBreeds = [
     "Other",
 ]
 
-export const disposition = [
+export const dispositions = [
     "Good with other animals",
     "Good with children",
     "Animal must be leashed at all times",
