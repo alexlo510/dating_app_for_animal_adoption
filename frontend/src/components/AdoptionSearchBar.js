@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { Button, FormControl, Grid, InputLabel, MenuItem, TextField, Select } from '@mui/material/';
+import { animalTypes, animalBreeds, disposition } from '../components/ProfilePropertiesLists.js';
 
 const textFieldStyle = {
     marginRight: 2,
@@ -42,28 +43,50 @@ export default function AdoptionSearchBar() {
             <Grid container justifyContent="center">
                 <Grid item sx={{display:"flex"}}>
                     <form onSubmit={handleSubmit}>
-                        <TextField 
-                            onChange={(e) => setType(e.target.value)}
-                            variant="standard" name="type" label="Type" sx={textFieldStyle}
-                        />
-                        <TextField 
-                            onChange={(e) => setBreed(e.target.value)}
-                            variant="standard" name="breed" label="Breed" sx={textFieldStyle}
-                        />
                         <FormControl sx={selectStyle}>
-                        <InputLabel id="selectLabel">Disposition</InputLabel>
-                        <Select
-                            labelId= "selectLabel"
-                            value={disposition}
-                            label="Disposition"
-                            variant="standard"
-                            onChange={(e) => setDisposition(e.target.value)}
-                        >
-                            <MenuItem value=""><span>None</span></MenuItem>
-                            <MenuItem value={"Good with other animals"}>Good with other Animals</MenuItem>
-                            <MenuItem value={"Good with children"}>Good with Children</MenuItem>
-                            <MenuItem value={"Animals must be leashed at all times"}>Animals Must Be Leashed at All Times</MenuItem>
-                        </Select>
+                            <InputLabel id="selectLabel">Type</InputLabel>
+                            <Select
+                                labelId= "selectLabel"
+                                value={type}
+                                label="Type"
+                                variant="standard"
+                                onChange={(e) => setType(e.target.value)}
+                            >
+                                <MenuItem value=""><span>None</span></MenuItem>
+                                {animalTypes.map((animalType) => (
+                                <MenuItem value={animalType}>{animalType}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl sx={selectStyle}>
+                            <InputLabel id="selectLabel">Breed</InputLabel>
+                            <Select
+                                labelId= "selectLabel"
+                                value={breed}
+                                label="Type"
+                                variant="standard"
+                                onChange={(e) => setBreed(e.target.value)}
+                            >
+                                <MenuItem value=""><span>None</span></MenuItem>
+                                {animalBreeds.map((animalBreed) => (
+                                <MenuItem value={animalBreed}>{animalBreed}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl sx={selectStyle}>
+                            <InputLabel id="selectLabel">Disposition</InputLabel>
+                            <Select
+                                labelId= "selectLabel"
+                                value={disposition}
+                                label="Disposition"
+                                variant="standard"
+                                onChange={(e) => setDisposition(e.target.value)}
+                            >
+                                <MenuItem value=""><span>None</span></MenuItem>
+                                <MenuItem value={"Good with other animals"}>Good with other Animals</MenuItem>
+                                <MenuItem value={"Good with children"}>Good with Children</MenuItem>
+                                <MenuItem value={"Animals must be leashed at all times"}>Animals Must Be Leashed at All Times</MenuItem>
+                            </Select>
                         </FormControl>
                         <TextField
                             label="Date Created"
