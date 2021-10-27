@@ -2,11 +2,6 @@ import React, {useState} from 'react';
 import { Button, Checkbox, FormControl, Grid, InputLabel, ListItemText, MenuItem, OutlinedInput, TextField, Select } from '@mui/material/';
 import { animalTypes, animalBreeds, dispositions } from '../components/ProfilePropertiesLists.js';
 
-const textFieldStyle = {
-    marginRight: 2,
-    marginTop: 1,
-}
-
 const buttonStyle = {
     marginTop: 2,
 }
