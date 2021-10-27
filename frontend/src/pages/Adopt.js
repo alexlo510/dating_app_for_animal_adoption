@@ -70,6 +70,8 @@ export default function Adopt() {
         try {
             async function fetchAnimal() {
                 const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
+                // sort list by date
+                res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
                 console.log(res.data); // remove after testing
                 setData(res.data)
                 setAnimal(res.data[res.data.length - 1]) // set to the latest animal
@@ -86,6 +88,9 @@ export default function Adopt() {
         try {
             async function fetchNewAnimal(fetchID) {
                 const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
+                // sort list by date
+                res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
+                
                 setData(res.data)
 
                 if (fetchID >= data.length) {
