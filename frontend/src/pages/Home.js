@@ -29,11 +29,7 @@ export default function Home() {
                     <Typography variant="h1" sx={wordStyle}>Welcome to Pinder</Typography>
                 </Box>
             </div>
-            {/* <div>
-                <Box sx={welcomeMessageContainerStyle}>
-                    <Typography variant="h1" sx={wordStyle}>Latest News</Typography>
-                </Box>
-            </div> */}
+            {/*use another div here to add a news section to the page/use grid in div above? or just use another page to display news feed?  */}
         </>
     );
 }
