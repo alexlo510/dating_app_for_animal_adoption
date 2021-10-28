@@ -20,6 +20,7 @@ const welcomeMessageContainerStyle = {
 const newsContainerStyle = {
     textAlign: "center",
     color: "Teal",
+    marginTop: 2,
 }
 
 const wordStyle = {
