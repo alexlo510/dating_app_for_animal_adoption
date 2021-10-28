@@ -46,31 +46,7 @@ export default function Login() {
         console.log(username, password);
     }
 
-    // const responseGoogleSuccess = (response) => {
-    //     console.log("Success", response);
-    //     console.log("tokenId", response.tokenId);
-    //     Axios.post("", {tokenId: response.tokenId}
-    //     ).then(response => {
-    //         console.log("Login Success", response);
-    //         // get the jwt for the user and the user's information. 
-    //         // store in a context, go back to homepage. 
-    //     });
-    // }
-
-    // const responseGoogleFailure = (response) => {
-    //     console.log("Failure", response);
-    // }
-
     const handleGoogleLogin = () => {
-        // try {
-        //     console.log("logging in");
-        //     Axios.post("").then(
-        //         response => {
-        //             console.log("Login Success", response);
-        //     });
-        // } catch (err) {
-        //     console.log(err);
-        // }
         const googleAuthUrl = ""
         window.open(googleAuthUrl, "_self")
     }
