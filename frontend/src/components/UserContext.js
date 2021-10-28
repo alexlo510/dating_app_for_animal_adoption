@@ -1,4 +1,5 @@
-import React, {createContext, useContext, useState} from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
+import Axios from 'axios';
 
 const UserContext = createContext();
 
@@ -8,6 +9,19 @@ export function useUserContext() {
 
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null)
+
+    useEffect(() => {
+        try {
+            async function fetchUser() {
+                const res = await Axios.get("", { withCredentials: true })
+                console.log(res.data); // remove after testing
+                setUser(res.data)
+            }
+            fetchUser();
+        } catch (err) {
+            console.log(err);
+        }
+    }, []);
 
     return (
         <UserContext.Provider value = {{user, setUser}}>
