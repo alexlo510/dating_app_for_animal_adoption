@@ -134,20 +134,18 @@ export default function Adopt() {
             <Container>
                 <AdoptionSearchBar/>
                 <Grid container justifyContent="space-around" sx={{marginTop: 2}}>
-                    <Grid item xs={8} md={6} lg={8}>
+                    <Grid item>
                         {!animal && <div style={{display: 'flex', justifyContent: 'center'}}><CircularProgress/></div>}
                         {animal && <AdoptionCard {...animal} handleAdoptClick={handleAdoptClick}/>}
                     </Grid>
                 </Grid>
                 <Grid container justifyContent="center" sx={{marginTop: 1}}>
-                    <Grid item xs={2} md={2} lg={2}>
+                    <Grid item sx={{marginRight: 2}}>
                         {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index - 1)}>
                             <ChevronLeftIcon sx={{color: "white"}}/>
                         </Button>}
                     </Grid>
-                    <Grid item xs={2} md={1} lg={1}>
-                    </Grid>
-                    <Grid item xs={2} md={1} lg={1}>
+                    <Grid item sx={{marginLeft: 2}}>
                         {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index + 1)}>
                             <ChevronRightIcon sx={{color: "white"}}/>
                         </Button>}
