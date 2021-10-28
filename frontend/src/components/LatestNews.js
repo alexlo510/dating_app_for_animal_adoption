@@ -15,9 +15,7 @@ export default function LatestNews() {
                 // sort list by date
                 res.data.sort((a, b) => (a.date_created < b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
                 console.log(res.data); // remove after testing
-                setData(res.data)
-                //setAnimal(res.data[res.data.length - 1]) // set to the latest animal
-                //setIndex(res.data.length - 1) // set the index of the animal 
+                setData(res.data) 
             }
             fetchNews();
         } catch (err) {
