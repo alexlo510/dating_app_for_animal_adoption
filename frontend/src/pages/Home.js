@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material/';
+import LatestNews from '../components/LatestNews';
 
 const backgroundStyle = {
     backgroundImage: `url(${process.env.PUBLIC_URL}/assets/images/cat_dog.jpg)`,
@@ -16,6 +17,11 @@ const welcomeMessageContainerStyle = {
     color: "Teal",
 }
 
+const newsContainerStyle = {
+    textAlign: "center",
+    color: "Teal",
+}
+
 const wordStyle = {
     fontSize: {lg: 100, md: 50, sm: 50, xs: 50},
     fontFamily: "Marker Felt"
@@ -29,7 +35,10 @@ export default function Home() {
                     <Typography variant="h1" sx={wordStyle}>Welcome to Pinder</Typography>
                 </Box>
             </div>
-            {/*use another div here to add a news section to the page/use grid in div above? or just use another page to display news feed?  */}
+            <Box sx={newsContainerStyle}>
+                <Typography variant="h1" sx={wordStyle}>Latest News</Typography>
+                <LatestNews/>
+            </Box>
         </>
     );
 }
