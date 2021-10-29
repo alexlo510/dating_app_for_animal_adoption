@@ -1,13 +1,30 @@
-import React, { useEffect, useState, Fragment } from 'react';
-import Axios from "axios"
-import { nanoid } from "nanoid";
 import { Container } from '@mui/material/';
-import RowReadOnly from "../components/RowReadOnly";
-import RowEditable from "../components/RowEditable";
+import Axios from "axios";
+import { nanoid } from "nanoid";
+import React, { Fragment, useEffect, useState } from 'react';
+import PetForm from '../components/PetForm';
+import AnimalReadRow from '../components/AnimalReadRow';
+import AnimalEditRow from '../components/AnimalEditRow';
 
-
-export default function Admin() {
+export default function AdminPets() {
     const [animals, setAnimals] = useState([])
+    const [editAnimalId, setEditAnimalId] = useState(null);
+    const [editFormData, setEditFormData] = useState({
+        availability: "",
+        breed: "",
+        description: "",
+        disposition: [],
+        name: "",
+        type: "",
+    });
+    const [addFormData, setAddFormData] = useState({
+        availability: "",
+        breed: "",
+        description: "",
+        disposition: [],
+        name: "",
+        type: "",
+    });
 
     useEffect(() => {
         try {
@@ -22,51 +39,29 @@ export default function Admin() {
         }
     }, []);
 
-    const [addFormData, setAddFormData] = useState({
-        availability: "",
-        breed: "",
-        description: "",
-        disposition: "",
-        name: "",
-        type: "",
-    });
-
-    const [editFormData, setEditFormData] = useState({
-        availability: "",
-        breed: "",
-        description: "",
-        disposition: "",
-        name: "",
-        type: "",
-    });
-
-    const [editAnimalId, setEditAnimalId] = useState(null);
-
-    const handleAddFormChange = (event) => {
+    const handleAddFormChange = event => {
         event.preventDefault();
 
-        const fieldName = event.target.getAttribute("name");
-        const fieldValue = event.target.value;
-
+        const { value, name } = event.target;
         const newFormData = { ...addFormData };
-        newFormData[fieldName] = fieldValue;
+        newFormData[name] = value;
 
         setAddFormData(newFormData);
+        console.log(newFormData); // remove after testing
     };
 
     const handleEditFormChange = (event) => {
         event.preventDefault();
 
-        const fieldName = event.target.getAttribute("name");
-        const fieldValue = event.target.value;
-
+        const { value, name } = event.target;
         const newFormData = { ...editFormData };
-        newFormData[fieldName] = fieldValue;
+        newFormData[name] = value;
 
         setEditFormData(newFormData);
+        console.log(newFormData); // remove after testing
     };
 
-    async function handleAddFormSubmit(event){
+    async function handleAddFormSubmit(event) {
         event.preventDefault();
 
         const newAnimal = {
@@ -150,7 +145,7 @@ export default function Admin() {
 
         try {
             const res = await Axios.delete(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalId}`)
-            console.log(res); 
+            console.log(res);
 
             newAnimals.splice(index, 1);
             setAnimals(newAnimals);
@@ -179,13 +174,15 @@ export default function Admin() {
                             {animals.map((animal) => (
                                 <Fragment>
                                     {editAnimalId === animal.id ? (
-                                        <RowEditable
-                                            editFormData={editFormData}
-                                            handleEditFormChange={handleEditFormChange}
-                                            handleCancelClick={handleCancelClick}
-                                        />
+                                        <>
+                                            <AnimalEditRow
+                                                formData={editFormData}
+                                                handleFormChange={handleEditFormChange}
+                                                handleCancelClick={handleCancelClick}
+                                            />
+                                        </>
                                     ) : (
-                                        <RowReadOnly
+                                        <AnimalReadRow
                                             animal={animal}
                                             handleEditClick={handleEditClick}
                                             handleDeleteClick={handleDeleteClick}
@@ -196,54 +193,13 @@ export default function Admin() {
                         </tbody>
                     </table>
                 </form>
+                <h2>Add an Animal</h2>
+                <PetForm
+                    formData={addFormData}
+                    handleChange={handleAddFormChange}
+                    handleSubmit={handleAddFormSubmit}
+                />
             </Container>
-
-            <h2>Add an Animal</h2>
-            <form onSubmit={handleAddFormSubmit}>
-                <input
-                    type="text"
-                    name="name"
-                    required="required"
-                    placeholder="Enter a name..."
-                    onChange={handleAddFormChange}
-                />
-                <input
-                    type="text"
-                    name="type"
-                    required="required"
-                    placeholder="Enter a type..."
-                    onChange={handleAddFormChange}
-                />
-                <input
-                    type="text"
-                    name="breed"
-                    required="required"
-                    placeholder="Enter a breed..."
-                    onChange={handleAddFormChange}
-                />
-                <input
-                    type="text"
-                    name="description"
-                    //required="required"
-                    placeholder="Enter a description..."
-                    onChange={handleAddFormChange}
-                />
-                <input
-                    type="text"
-                    name="disposition"
-                    required="required"
-                    placeholder="Enter a disposition..."
-                    onChange={handleAddFormChange}
-                />
-                <input
-                    type="text"
-                    name="availability"
-                    required="required"
-                    placeholder="Enter availability..."
-                    onChange={handleAddFormChange}
-                />
-                <button type="submit">Add</button>
-            </form>
         </>
     );
 }
