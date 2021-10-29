@@ -40,13 +40,13 @@ export default function AdoptionSearchBar() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        // change disposition to an object?
-        let dispositionObject = {}
-        dispositions.forEach((key) => {
-            disposition.includes(key) ? dispositionObject[key] = true : dispositionObject[key] = false
-        });
 
-        console.log(dispositionObject);
+        // change disposition to an object?
+        // let dispositionObject = {}
+        // dispositions.forEach((key) => {
+        //     disposition.includes(key) ? dispositionObject[key] = true : dispositionObject[key] = false
+        // });
+        // console.log(dispositionObject);
 
         console.log({type, breed, disposition, date});
         // call a function on the adopt page, passing in these parameters? 
@@ -77,7 +77,7 @@ export default function AdoptionSearchBar() {
                             >
                                 <MenuItem value=""><span>None</span></MenuItem>
                                 {animalTypes.map((animalType) => (
-                                <MenuItem value={animalType}>{animalType}</MenuItem>
+                                <MenuItem key={animalType} value={animalType}>{animalType}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
@@ -94,7 +94,7 @@ export default function AdoptionSearchBar() {
                             >
                                 <MenuItem value=""><span>None</span></MenuItem>
                                 {animalBreeds.map((animalBreed) => (
-                                <MenuItem value={animalBreed}>{animalBreed}</MenuItem>
+                                <MenuItem key={animalBreed} value={animalBreed}>{animalBreed}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
