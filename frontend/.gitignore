@@ -22,7 +22,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-.gitignore
 .suo
 slnx.sqlite
 VSWorkspaceState.json
