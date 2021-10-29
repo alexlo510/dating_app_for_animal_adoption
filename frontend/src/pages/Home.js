@@ -12,27 +12,22 @@ const backgroundStyle = {
     justifyContent: "center",
 }
 
-const welcomeMessageContainerStyle = {
-    textAlign: "center",
-    color: "Teal",
-}
-
 const newsContainerStyle = {
-    textAlign: "center",
-    color: "Teal",
     marginTop: 2,
 }
 
 const wordStyle = {
     fontSize: {lg: 100, md: 50, sm: 50, xs: 50},
-    fontFamily: "Marker Felt"
+    fontFamily: "Marker Felt",
+    color: "Teal",
+    textAlign: "center",
 }
 
 export default function Home() {
     return (
         <>
             <div style={backgroundStyle}>
-                <Box sx={welcomeMessageContainerStyle}>
+                <Box>
                     <Typography variant="h1" sx={wordStyle}>Welcome to Pinder</Typography>
                 </Box>
             </div>
