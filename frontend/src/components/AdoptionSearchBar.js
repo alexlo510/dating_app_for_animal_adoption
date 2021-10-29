@@ -25,7 +25,7 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 325,
+      width: {lg: 325, md: 325, sm: 325, xs: 250},
     },
   },
 };
@@ -65,8 +65,7 @@ export default function AdoptionSearchBar() {
     return (
         <>
             <Grid container justifyContent="center">
-                <Grid item sx={{display:"flex"}}>
-                    <form onSubmit={handleSubmit}>
+                    <Grid item>
                         <FormControl sx={selectStyle}>
                             <InputLabel id="selectLabel">Type</InputLabel>
                             <Select
@@ -82,6 +81,8 @@ export default function AdoptionSearchBar() {
                                 ))}
                             </Select>
                         </FormControl>
+                    </Grid>
+                    <Grid item>
                         <FormControl sx={selectStyle}>
                             <InputLabel id="selectLabel">Breed</InputLabel>
                             <Select
@@ -97,7 +98,9 @@ export default function AdoptionSearchBar() {
                                 ))}
                             </Select>
                         </FormControl>
-                        <FormControl sx={{ m: 1, width: 325 }}>
+                    </Grid>
+                    <Grid item>
+                        <FormControl sx={{ m: 1, width: {lg: 325, md: 325, sm: 325, xs: 250}}}>
                             <InputLabel id="dispositionLabel">Disposition</InputLabel>
                             <Select
                             labelId="dispositionLabel"
@@ -117,6 +120,7 @@ export default function AdoptionSearchBar() {
                             ))}
                             </Select>
                         </FormControl>
+                    </Grid>
                         {/* <FormControl sx={selectStyle}>
                             <InputLabel id="selectLabel">Disposition</InputLabel>
                             <Select
@@ -132,6 +136,7 @@ export default function AdoptionSearchBar() {
                                 <MenuItem value={"Animals must be leashed at all times"}>Animals Must Be Leashed at All Times</MenuItem>
                             </Select>
                         </FormControl> */}
+                    <Grid item>
                         <TextField
                             label="Date Created"
                             type="date"
@@ -141,9 +146,8 @@ export default function AdoptionSearchBar() {
                             }}
                             onChange={(e) => setDate(e.target.value)}
                         />
-                        <Button type="submit" color="primary" variant="contained" sx={buttonStyle}>Search</Button>
-                    </form>
-                </Grid>
+                        <Button type="submit" color="primary" variant="contained" sx={buttonStyle} onClick={handleSubmit}>Search</Button>
+                    </Grid>
             </Grid>
         </>
     );
