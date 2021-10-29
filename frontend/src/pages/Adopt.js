@@ -70,6 +70,8 @@ export default function Adopt() {
         try {
             async function fetchAnimal() {
                 const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
+                // sort list by date
+                res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
                 console.log(res.data); // remove after testing
                 setData(res.data)
                 setAnimal(res.data[res.data.length - 1]) // set to the latest animal
@@ -86,6 +88,9 @@ export default function Adopt() {
         try {
             async function fetchNewAnimal(fetchID) {
                 const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
+                // sort list by date
+                res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
+                
                 setData(res.data)
 
                 if (fetchID >= data.length) {
@@ -129,20 +134,18 @@ export default function Adopt() {
             <Container>
                 <AdoptionSearchBar/>
                 <Grid container justifyContent="space-around" sx={{marginTop: 2}}>
-                    <Grid item xs={8} md={6} lg={8}>
+                    <Grid item>
                         {!animal && <div style={{display: 'flex', justifyContent: 'center'}}><CircularProgress/></div>}
                         {animal && <AdoptionCard {...animal} handleAdoptClick={handleAdoptClick}/>}
                     </Grid>
                 </Grid>
                 <Grid container justifyContent="center" sx={{marginTop: 1}}>
-                    <Grid item xs={2} md={2} lg={2}>
+                    <Grid item sx={{marginRight: 2}}>
                         {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index - 1)}>
                             <ChevronLeftIcon sx={{color: "white"}}/>
                         </Button>}
                     </Grid>
-                    <Grid item xs={2} md={1} lg={1}>
-                    </Grid>
-                    <Grid item xs={2} md={1} lg={1}>
+                    <Grid item sx={{marginLeft: 2}}>
                         {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index + 1)}>
                             <ChevronRightIcon sx={{color: "white"}}/>
                         </Button>}
