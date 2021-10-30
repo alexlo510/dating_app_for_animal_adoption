@@ -67,7 +67,8 @@ app.get('/auth/google',
 app.get('/auth/google/callback', 
     passport.authenticate('google', {failureRedirect: '/error'}),
     function(req, res) {
-        res.redirect('/profile/'+accesstoken);
+        // Need to change this to react client's entry url. TO-DO
+        res.redirect(CONFIG.oauth_success_redirect_url+'/'+accesstoken);
     }
 );
 
