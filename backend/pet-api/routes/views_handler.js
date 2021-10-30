@@ -58,7 +58,54 @@ async function getProfile(accesstoken)
     }
 };
 
-router.get('/', async (req, res) => {
+
+router.get('/home', async (req, res) => {
+
+    try {
+        let oauth_url = "http://localhost:8000/auth/google";
+
+        res.render('./views/Home', {
+            oauth_url: oauth_url
+        })
+    }
+    catch (error) {
+        console.log(error);
+    }
+})
+
+router.get('/error', async (req, res) => {
+
+    try {
+        let render_home_url = "http://localhost:3000/home";
+
+        res.render('./views/Error', {
+            render_home_url: render_home_url
+        })
+    }
+    catch (error) {
+        console.log(error);
+    }
+})
+
+router.get('/profile/:accesstoken', async (req, res) => {
+
+    try {
+        let render_id_token = req.params.accesstoken;
+        console.log("xxxxxxx");
+        console.log(render_id_token);
+        let render_home_url = "http://localhost:8000/home";
+
+        res.render('./views/Profile', {
+            render_home_url: render_home_url,
+            render_id_token: render_id_token
+        })
+    }
+    catch (error) {
+        console.log(error);
+    }
+})
+
+router.get('/old/home', async (req, res) => {
 
     try {
         sess = req.session;
@@ -85,7 +132,7 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.get('/oauth', async (req, res) => {
+router.get('/old/oauth', async (req, res) => {
  
     if (sess == 'undefined' || sess == null) {
         console.log("Session error entered");

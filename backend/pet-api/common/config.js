@@ -4,9 +4,9 @@ const port = 8000;
 const ip = 'localhost';
 
 // TO-DO: Harded coded secret. Should set these in environment variables instead of code. 
-// client id B
-const oauth_client_id ='877518236258-ogldcu9fed1rp9676m2auttl3rhqj8f1.apps.googleusercontent.com';
-const oauth_client_secret ='EiEW9JxTEXJAf7_ePgOTgRnL';
+// Pet-API
+const oauth_client_id ='570264399882-v8tm7os3eb1hnn6lbfbla5nl03d486u4.apps.googleusercontent.com';
+const oauth_client_secret ='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';
 
 //const oauth_redirect ='https://osu-cs493-project-b.et.r.appspot.com/oauth';
 const oauth_redirect ='http://localhost:8000/oauth';
