@@ -62,10 +62,10 @@ async function getProfile(accesstoken)
 router.get('/home', async (req, res) => {
 
     try {
-        let oauth_url = "http://localhost:8000/auth/google";
+        let google_oauth_url = CONFIG.google_oauth_url;
 
         res.render('./views/Home', {
-            oauth_url: oauth_url
+            google_oauth_url: google_oauth_url
         })
     }
     catch (error) {
@@ -76,7 +76,7 @@ router.get('/home', async (req, res) => {
 router.get('/error', async (req, res) => {
 
     try {
-        let render_home_url = "http://localhost:3000/home";
+        let render_home_url = CONFIG.view_home_url;
 
         res.render('./views/Error', {
             render_home_url: render_home_url
@@ -91,9 +91,8 @@ router.get('/profile/:accesstoken', async (req, res) => {
 
     try {
         let render_id_token = req.params.accesstoken;
-        console.log("xxxxxxx");
         console.log(render_id_token);
-        let render_home_url = "http://localhost:8000/home";
+        let render_home_url = CONFIG.view_home_url;
 
         res.render('./views/Profile', {
             render_home_url: render_home_url,

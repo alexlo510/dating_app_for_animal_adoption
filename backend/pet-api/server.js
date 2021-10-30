@@ -41,7 +41,7 @@ let accesstoken =null;
 passport.use(new GoogleStrategy({
     clientID: CONFIG.oauth_client_id,
     clientSecret: CONFIG.oauth_client_secret,
-    callbackURL: "http://localhost:8000/auth/google/callback"
+    callbackURL: CONFIG.oauth_callback_url
   },
   function(accessToken, refreshToken, profile, cb) {
     // called when successfully logged in   
@@ -86,7 +86,7 @@ app.use('/news', newsrouter);
 
 
 // Listen to the App Engine-specified port, or 8000 otherwise
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3000;
 app.listen(port, async () => {
 
     (
