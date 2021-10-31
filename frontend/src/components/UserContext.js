@@ -13,9 +13,11 @@ export function UserProvider({ children }) {
     useEffect(() => {
         try {
             async function fetchUser() {
-                const res = await Axios.get("", { withCredentials: true })
+                const res = await Axios.get("test", { withCredentials: true })
                 console.log(res.data); // remove after testing
-                setUser(res.data)
+                if (res.data) {
+                    setUser(res.data)
+                }
             }
             fetchUser();
         } catch (err) {
