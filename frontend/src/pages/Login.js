@@ -46,7 +46,7 @@ export default function Login() {
     }
 
     const handleGoogleLogin = () => {
-        const googleAuthUrl = ""
+        const googleAuthUrl = "https://pet-shelter-api.uw.r.appspot.com/auth/google"
         window.open(googleAuthUrl, "_self")
     }
 
