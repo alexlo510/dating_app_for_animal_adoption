@@ -1,154 +1,143 @@
-import { Container } from '@mui/material/';
-import Axios from "axios";
+import React, { useEffect, useState, Fragment } from 'react';
+import Axios from "axios"
 import { nanoid } from "nanoid";
-import React, { Fragment, useEffect, useState } from 'react';
-import PetForm from '../components/PetForm';
-import AnimalReadRow from '../components/AnimalReadRow';
-import AnimalEditRow from '../components/AnimalEditRow';
+import { Container } from '@mui/material/';
+import NewsReadRow from '../components/NewsReadRow';
+import NewsEditRow from '../components/NewsEditRow';
 
-export default function AdminPets() {
-    const [animals, setAnimals] = useState([])
-    const [editAnimalId, setEditAnimalId] = useState(null);
-    const [editFormData, setEditFormData] = useState({
-        availability: "",
-        breed: "",
-        description: "",
-        disposition: [],
-        name: "",
-        type: "",
-    });
+
+export default function Admin() {
+    const [articles, setArticles] = useState([])
+    const [editArticleId, setEditArticleId] = useState(null);
     const [addFormData, setAddFormData] = useState({
-        availability: "",
-        breed: "",
-        description: "",
-        disposition: [],
-        name: "",
-        type: "",
+        title: "",
+        content: "",
+        news_url: "",
+    });
+    const [editFormData, setEditFormData] = useState({
+        title: "",
+        content: "",
+        news_url: "",
     });
 
     useEffect(() => {
         try {
-            async function fetchAnimal() {
-                const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
-                console.log(res.data); // remove after testing
-                setAnimals(res.data)
-            }
-            fetchAnimal();
+            fetchArticles();
         } catch (err) {
             console.log(err);
         }
     }, []);
 
-    const handleAddFormChange = event => {
+    async function fetchArticles() {
+        const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/news")
+        console.log(res.data); // remove after testing
+        setArticles(res.data)
+    }
+
+    const handleAddFormChange = (event) => {
         event.preventDefault();
 
-        const { value, name } = event.target;
+        const fieldName = event.target.getAttribute("name");
+        const fieldValue = event.target.value;
+
         const newFormData = { ...addFormData };
-        newFormData[name] = value;
+        newFormData[fieldName] = fieldValue;
 
         setAddFormData(newFormData);
-        console.log(newFormData); // remove after testing
     };
 
     const handleEditFormChange = (event) => {
         event.preventDefault();
 
-        const { value, name } = event.target;
+        const fieldName = event.target.getAttribute("name");
+        const fieldValue = event.target.value;
+
         const newFormData = { ...editFormData };
-        newFormData[name] = value;
+        newFormData[fieldName] = fieldValue;
 
         setEditFormData(newFormData);
-        console.log(newFormData); // remove after testing
     };
 
     async function handleAddFormSubmit(event) {
         event.preventDefault();
 
-        const newAnimal = {
+        const newArticle = {
             id: nanoid(),
-            availability: addFormData.availability,
-            breed: addFormData.breed,
-            description: addFormData.description,
-            disposition: addFormData.disposition,
-            name: addFormData.name,
-            type: addFormData.type,
+            title: addFormData.title,
+            content: addFormData.content,
+            news_url: addFormData.news_url,
         };
 
         try {
-            const payload = newAnimal
-            const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/pets/`, payload)
+            const payload = newArticle
+            const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/news/`, payload)
             console.log(res);
-
-            const newAnimals = [...animals, newAnimal];
-            setAnimals(newAnimals);
-
         } catch (err) {
             console.log("Failed to POST: ", err);
+        }
+        try {
+            fetchArticles();
+        } catch (err) {
+            console.log(err);
         }
     };
 
     async function handleEditFormSubmit(event) {
         event.preventDefault();
 
-        const editedAnimal = {
-            availability: editFormData.availability,
-            breed: editFormData.breed,
-            description: editFormData.description,
-            disposition: editFormData.disposition,
-            name: editFormData.name,
-            type: editFormData.type,
+        const editedArticle = {
+            title: editFormData.title,
+            content: editFormData.content,
+            news_url: editFormData.news_url,
         };
 
-        const newAnimals = [...animals];
-        const index = animals.findIndex((animal) => animal.id === editAnimalId);
-        console.log("Editting", editAnimalId); // remove after testing
+        const newArticles = [...articles];
+        const index = articles.findIndex((article) => article.id === editArticleId);
+        console.log("Editting", editArticleId); // remove after testing
 
         try {
-            const payload = editedAnimal
-            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${editAnimalId}`, payload)
+            const payload = editedArticle
+            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/news/${editArticleId}`, payload)
             console.log(res);
 
-            newAnimals[index] = editedAnimal;
-            setAnimals(newAnimals);
-            setEditAnimalId(null);
+            newArticles[index] = editedArticle;
+            setArticles(newArticles);
+            setEditArticleId(null);
 
         } catch (err) {
             console.log("Failed to PATCH: ", err);
         }
     };
 
-    const handleEditClick = (event, animal) => {
+    const handleEditClick = (event, article) => {
         event.preventDefault();
-        setEditAnimalId(animal.id);
+        setEditArticleId(article.id);
 
         const formValues = {
-            availability: animal.availability,
-            breed: animal.breed,
-            description: animal.description,
-            disposition: animal.disposition,
-            name: animal.name,
-            type: animal.type,
+            title: article.title,
+            content: article.content,
+            news_url: article.news_url,
         };
-
+        console.log(formValues);
         setEditFormData(formValues);
     };
 
     const handleCancelClick = () => {
-        setEditAnimalId(null);
+        setEditArticleId(null);
     };
 
-    async function handleDeleteClick(animalId) {
-        console.log("Deleting", animalId); // remove after testing
+    async function handleDeleteClick(articleId) {
+        console.log("Deleting", articleId); // remove after testing
 
-        const newAnimals = [...animals];
-        const index = animals.findIndex((animal) => animal.id === animalId);
+        const newArticles = [...articles];
+        const index = articles.findIndex((article) => article.id === articleId);
 
         try {
-            const res = await Axios.delete(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalId}`)
+            const res = await Axios.delete(`https://pet-shelter-api.uw.r.appspot.com/news/${articleId}`)
             console.log(res);
 
-            newAnimals.splice(index, 1);
-            setAnimals(newAnimals);
+            newArticles.splice(index, 1);
+            setArticles(newArticles);
 
         } catch (err) {
             console.log("Failed to DELETE: ", err);
@@ -162,28 +151,23 @@ export default function AdminPets() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Breed</th>
-                                <th>Discription</th>
-                                <th>Disposition</th>
-                                <th>Availability</th>
+                                <th>Title</th>
+                                <th>Content</th>
+                                <th>URL</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {animals.map((animal) => (
+                            {articles.map((article) => (
                                 <Fragment>
-                                    {editAnimalId === animal.id ? (
-                                        <>
-                                            <AnimalEditRow
-                                                formData={editFormData}
-                                                handleFormChange={handleEditFormChange}
-                                                handleCancelClick={handleCancelClick}
-                                            />
-                                        </>
+                                    {editArticleId === article.id ? (
+                                        <NewsEditRow
+                                            formData={editFormData}
+                                            handleChange={handleEditFormChange}
+                                            handleCancelClick={handleCancelClick}
+                                        />
                                     ) : (
-                                        <AnimalReadRow
-                                            animal={animal}
+                                        <NewsReadRow
+                                            article={article}
                                             handleEditClick={handleEditClick}
                                             handleDeleteClick={handleDeleteClick}
                                         />
@@ -193,13 +177,33 @@ export default function AdminPets() {
                         </tbody>
                     </table>
                 </form>
-                <h2>Add an Animal</h2>
-                <PetForm
-                    formData={addFormData}
-                    handleChange={handleAddFormChange}
-                    handleSubmit={handleAddFormSubmit}
-                />
             </Container>
+
+            <h2>Add an Article</h2>
+            <form onSubmit={handleAddFormSubmit}>
+                <input
+                    required
+                    type="text"
+                    name="title"
+                    placeholder="Enter a title..."
+                    onChange={handleAddFormChange}
+                />
+                <input
+                    required
+                    type="text"
+                    name="content"
+                    placeholder="Enter content..."
+                    onChange={handleAddFormChange}
+                />
+                <input
+                    required
+                    type="text"
+                    name="news_url"
+                    placeholder="Enter a URL"
+                    onChange={handleAddFormChange}
+                />
+                <button type="submit">Add</button>
+            </form>
         </>
     );
 }

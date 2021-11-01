@@ -31,6 +31,14 @@ export const navLinks = [
         id: 1,
         path:"/adopt",
         title:"Adopt",
+    }, {
+        id: 4,
+        path: "/adminNews",
+        title: "Manage News",
+    }, {
+        id: 5,
+        path: "/adminPets",
+        title: "Manage Pets",
     }, {   
         id: 2,
         path:"/signUp",
