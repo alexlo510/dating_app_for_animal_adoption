@@ -242,7 +242,7 @@ router.delete('/:news_id', async (req, res) => {
             return;
         }
 
-        const data = await dsm.deletePet(req.params.news_id);
+        const data = await dsm.deleteNews(req.params.news_id);
         res.status(204).send();
         console.log("=====Response Sent=====");
     }
