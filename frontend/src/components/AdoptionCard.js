@@ -18,7 +18,7 @@ const buttonStyle = {
 
 export default function AdoptionCard(props) {
     const{ name, description, type, breed, disposition, availability, id, picture_url, handleAdoptClick} = props
-    
+    console.log(disposition);
     return (
         <Card sx={{}}>
             {picture_url !== "" ? <CardMedia component="img" image={picture_url} sx={{objectFit: "scale-down", maxHeight:300}}/> : null}
@@ -28,8 +28,8 @@ export default function AdoptionCard(props) {
                 <Typography variant="body2" color="text.secondary" component="div">Breed: {breed || ""}</Typography>
                 <Typography variant="body2" color="text.secondary" component="div">Disposition:
                 {disposition.constructor === Array ? 
-                    disposition.map(
-                        (item, index) => dispositions.includes(item) ? 
+                    dispositions.map(
+                        (item, index) => disposition.includes(item) ? 
                         <Typography key={index} variant="body2" color="text.secondary" component="div">{item}<CheckBoxOutlinedIcon fontSize="small"/></Typography>
                         : <Typography key={index} variant="body2" color="text.secondary" component="div">{item}<CheckBoxOutlineBlankOutlinedIcon fontSize="small"/></Typography>
                     ) 

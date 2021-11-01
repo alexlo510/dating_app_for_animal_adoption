@@ -28,16 +28,17 @@ export default function AdminPets() {
 
     useEffect(() => {
         try {
-            async function fetchAnimal() {
-                const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
-                console.log(res.data); // remove after testing
-                setAnimals(res.data)
-            }
             fetchAnimal();
         } catch (err) {
             console.log(err);
         }
     }, []);
+
+    async function fetchAnimal() {
+        const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
+        console.log(res.data); // remove after testing
+        setAnimals(res.data)
+    }
 
     const handleAddFormChange = event => {
         event.preventDefault();
@@ -65,7 +66,7 @@ export default function AdminPets() {
         event.preventDefault();
 
         const newAnimal = {
-            id: nanoid(),
+            // id: nanoid(),
             availability: addFormData.availability,
             breed: addFormData.breed,
             description: addFormData.description,
@@ -75,15 +76,18 @@ export default function AdminPets() {
         };
 
         try {
+            console.log("POST: ", newAnimal); // remove after testing
             const payload = newAnimal
             const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/pets/`, payload)
             console.log(res);
 
-            const newAnimals = [...animals, newAnimal];
-            setAnimals(newAnimals);
-
         } catch (err) {
             console.log("Failed to POST: ", err);
+        }
+        try {
+            fetchAnimal();
+        } catch (err) {
+            console.log(err);
         }
     };
 
@@ -91,6 +95,7 @@ export default function AdminPets() {
         event.preventDefault();
 
         const editedAnimal = {
+            id: editAnimalId,
             availability: editFormData.availability,
             breed: editFormData.breed,
             description: editFormData.description,
@@ -101,25 +106,31 @@ export default function AdminPets() {
 
         const newAnimals = [...animals];
         const index = animals.findIndex((animal) => animal.id === editAnimalId);
-        console.log("Editting", editAnimalId); // remove after testing
 
         try {
+            console.log("Index: ", index); // remove after testing
+            console.log("PATCH: ", editAnimalId); // remove after testing
             const payload = editedAnimal
             const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${editAnimalId}`, payload)
             console.log(res);
 
             newAnimals[index] = editedAnimal;
             setAnimals(newAnimals);
-            setEditAnimalId(null);
+            setEditAnimalId(1);
 
         } catch (err) {
             console.log("Failed to PATCH: ", err);
         }
+        console.log("Animals: ", animals); // remove after testing
     };
 
     const handleEditClick = (event, animal) => {
+        console.log("Animal: ", animal); // remove after testing
+        console.log("AnimalID: ", animal.id);
+
         event.preventDefault();
         setEditAnimalId(animal.id);
+        console.log("editAnimalId: ", editAnimalId); // remove after testing
 
         const formValues = {
             availability: animal.availability,
@@ -135,10 +146,10 @@ export default function AdminPets() {
 
     const handleCancelClick = () => {
         setEditAnimalId(null);
+        console.log("Animals: ", animals); // remove after testing
     };
 
     async function handleDeleteClick(animalId) {
-        console.log("Deleting", animalId); // remove after testing
 
         const newAnimals = [...animals];
         const index = animals.findIndex((animal) => animal.id === animalId);
@@ -146,6 +157,8 @@ export default function AdminPets() {
         try {
             const res = await Axios.delete(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalId}`)
             console.log(res);
+
+            console.log("Deleting", animalId); // remove after testing
 
             newAnimals.splice(index, 1);
             setAnimals(newAnimals);
@@ -165,7 +178,7 @@ export default function AdminPets() {
                                 <th>Name</th>
                                 <th>Type</th>
                                 <th>Breed</th>
-                                <th>Discription</th>
+                                <th>Description</th>
                                 <th>Disposition</th>
                                 <th>Availability</th>
                             </tr>
@@ -177,7 +190,7 @@ export default function AdminPets() {
                                         <>
                                             <AnimalEditRow
                                                 formData={editFormData}
-                                                handleFormChange={handleEditFormChange}
+                                                handleChange={handleEditFormChange}
                                                 handleCancelClick={handleCancelClick}
                                             />
                                         </>
