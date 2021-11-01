@@ -79,7 +79,7 @@ const AddPetForm = ({
                 <FormControl sx={{ m: 1, width: 325 }}>
                     <InputLabel id="dispositionLabel">Disposition</InputLabel>
                     <Select
-                        required
+                        //required
                         name="disposition"
                         labelId="dispositionLabel"
                         id="disposition"
