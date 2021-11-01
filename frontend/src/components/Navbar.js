@@ -1,5 +1,4 @@
 import React from 'react';
-import './Navbar.css';
 import { Typography, AppBar, Button, List, ListItem, Toolbar, useMediaQuery } from '@mui/material/';
 import { Link } from 'react-router-dom';
 import { theme } from './Theme.js';
@@ -32,6 +31,14 @@ export const navLinks = [
         id: 1,
         path:"/adopt",
         title:"Adopt",
+    }, {
+        id: 4,
+        path: "/adminNews",
+        title: "Manage News",
+    }, {
+        id: 5,
+        path: "/adminPets",
+        title: "Manage Pets",
     }, {   
         id: 2,
         path:"/signUp",
