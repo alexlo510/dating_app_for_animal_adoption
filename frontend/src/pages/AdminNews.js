@@ -8,33 +8,31 @@ import NewsEditRow from '../components/NewsEditRow';
 
 export default function Admin() {
     const [articles, setArticles] = useState([])
-
-    useEffect(() => {
-        try {
-            async function fetchArticles() {
-                const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/news")
-                console.log(res.data); // remove after testing
-                setArticles(res.data)
-            }
-            fetchArticles();
-        } catch (err) {
-            console.log(err);
-        }
-    }, []);
-
+    const [editArticleId, setEditArticleId] = useState(null);
     const [addFormData, setAddFormData] = useState({
         title: "",
         content: "",
         news_url: "",
     });
-
     const [editFormData, setEditFormData] = useState({
         title: "",
         content: "",
         news_url: "",
     });
 
-    const [editArticleId, setEditArticleId] = useState(null);
+    useEffect(() => {
+        try {
+            fetchArticles();
+        } catch (err) {
+            console.log(err);
+        }
+    }, []);
+
+    async function fetchArticles() {
+        const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/news")
+        console.log(res.data); // remove after testing
+        setArticles(res.data)
+    }
 
     const handleAddFormChange = (event) => {
         event.preventDefault();
@@ -74,12 +72,13 @@ export default function Admin() {
             const payload = newArticle
             const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/news/`, payload)
             console.log(res);
-
-            const newArticles = [...articles, newArticle];
-            setArticles(newArticles);
-
         } catch (err) {
             console.log("Failed to POST: ", err);
+        }
+        try {
+            fetchArticles();
+        } catch (err) {
+            console.log(err);
         }
     };
 
