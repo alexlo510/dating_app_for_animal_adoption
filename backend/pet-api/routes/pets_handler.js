@@ -96,7 +96,7 @@ router.get('/', async (req, res) => {
 router.get('/:pet_id', async (req, res) => {
     
     console.log("=====Request Getting Pet by id=====");
-    console.log("pet_id: "+ req.params.boat_id);
+    console.log("pet_id: "+ req.params.pet_id);
 
     try {
 
