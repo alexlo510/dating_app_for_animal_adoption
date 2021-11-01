@@ -178,7 +178,7 @@ export default function AdminPets() {
                                 <th>Name</th>
                                 <th>Type</th>
                                 <th>Breed</th>
-                                <th>Discription</th>
+                                <th>Description</th>
                                 <th>Disposition</th>
                                 <th>Availability</th>
                             </tr>
