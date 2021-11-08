@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Axios from "axios"
-import { Button, CircularProgress, Container, Grid } from '@mui/material/';
+import { Button, CircularProgress, Container, Grid, Typography } from '@mui/material/';
 import AdoptionCard from '../components/AdoptionCard';
 import AlertMessage from '../components/AlertMessage';
 import AdoptionSearchBar from '../components/AdoptionSearchBar';
@@ -65,6 +65,11 @@ export default function Adopt() {
     const [disableButtons, setDisableButtons] = useState(false)
     const [adoptSuccess, setAdoptSuccess] = useState(false)
     const [adoptFail, setAdoptFail] = useState(false)
+    const [searchFilter, setSearchFilter] = useState(false)
+    const [typeFilter, setTypeFilter] = useState("")
+    const [breedFilter, setBreedFilter] = useState("")
+    const [dispositionFilter, setDispositionFilter] = useState([])
+    const [dateFilter, setDateFilter] = useState("")
     
     useEffect(() => {
         try {
@@ -129,10 +134,28 @@ export default function Adopt() {
         }
     }
 
+    async function handleSearch(type, breed, disposition, date) {
+        console.log(type, breed, disposition, date);
+        try {
+            // axios to server
+            // const payload = {type: type, breed: breed, disposition: disposition, date: date}
+            // const res = await Axios.post("testing", payload)
+            setSearchFilter(true)
+            setTypeFilter(type)
+            setBreedFilter(breed)
+            setDispositionFilter(disposition)
+            setDateFilter(date)
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     return (
         <>
             <Container>
-                <AdoptionSearchBar/>
+                <AdoptionSearchBar handleSearch={handleSearch} />
+                {searchFilter && <Typography>Filter By: {typeFilter && <span>{typeFilter}.</span>} {breedFilter && <span>{breedFilter}.</span>} {dispositionFilter && dispositionFilter.map((disposition) => (<span>{disposition}. </span>))} {dateFilter && <span>{dateFilter}.</span>}</Typography>}
+                {searchFilter && <Button color="primary" variant="contained" onClick={() => window.location.reload()}>Clear Filters</Button>}
                 <Grid container justifyContent="space-around" sx={{marginTop: 2}}>
                     <Grid item>
                         {!animal && <div style={{display: 'flex', justifyContent: 'center'}}><CircularProgress/></div>}
