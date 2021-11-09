@@ -6,7 +6,14 @@ const EditableRow = ({
     formData,
     handleChange,
     handleCancelClick,
+    handleReplaceImage
 }) => {
+    const fileInput = React.useRef(null);
+
+    const handleReplaceImageButtonClick = event => {
+        fileInput.current.click();
+    };
+
     return (
         <tr>
             <td>
@@ -31,6 +38,7 @@ const EditableRow = ({
             </td>
             <td>
                 <input
+                    disabled  // added disabled
                     required
                     type="text"
                     placeholder="Enter a URL..."
@@ -41,6 +49,25 @@ const EditableRow = ({
             </td>
             <td>
                 <button type="submit">Save</button>
+                <label htmlFor="replace_image">
+                    <input
+                        style={{ display: 'none' }}
+                        ref={fileInput}
+                        id="replace_image"
+                        name="replace_image"
+                        type="file"
+                        accept="image/*"
+                        onChange={e => {
+                            const file = e.target.files[0]
+                            if (file != null) {
+                                handleReplaceImage(file, formData.id)
+                            }
+                        }}
+                    />
+                    <button type="button" onClick={handleReplaceImageButtonClick}>
+                        Replace Image
+                    </button>
+                </label>
                 <button type="button" onClick={handleCancelClick}>Cancel</button>
             </td>
         </tr>
