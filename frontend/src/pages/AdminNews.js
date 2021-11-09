@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import { Container } from '@mui/material/';
 import NewsReadRow from '../components/NewsReadRow';
 import NewsEditRow from '../components/NewsEditRow';
+import FileUploadComponent from '../components/FileUploadComponent';
 
 
 export default function Admin() {
@@ -12,7 +13,8 @@ export default function Admin() {
     const [addFormData, setAddFormData] = useState({
         title: "",
         content: "",
-        news_url: "",
+        // news_url: "",
+        file: "",
     });
     const [editFormData, setEditFormData] = useState({
         title: "",
@@ -65,13 +67,15 @@ export default function Admin() {
             id: nanoid(),
             title: addFormData.title,
             content: addFormData.content,
-            news_url: addFormData.news_url,
+            // news_url: addFormData.news_url,
+            file: addFormData.file
         };
-
+        console.log(newArticle); // remove later
         try {
             const payload = newArticle
             const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/news/`, payload)
             console.log(res);
+            // add another axios call to upload the image file? 
         } catch (err) {
             console.log("Failed to POST: ", err);
         }
@@ -114,6 +118,7 @@ export default function Admin() {
         setEditArticleId(article.id);
 
         const formValues = {
+            id: article.id, // added this 
             title: article.title,
             content: article.content,
             news_url: article.news_url,
@@ -144,6 +149,12 @@ export default function Admin() {
         }
     }
 
+    function handleReplaceImage(file, id){
+        console.log("Replacing image")
+        console.log(file, id);
+        // make axios call to backend to replace image. 
+    }
+
     return (
         <>
             <Container>
@@ -164,6 +175,7 @@ export default function Admin() {
                                             formData={editFormData}
                                             handleChange={handleEditFormChange}
                                             handleCancelClick={handleCancelClick}
+                                            handleReplaceImage={handleReplaceImage}
                                         />
                                     ) : (
                                         <NewsReadRow
@@ -195,12 +207,17 @@ export default function Admin() {
                     placeholder="Enter content..."
                     onChange={handleAddFormChange}
                 />
-                <input
+                {/* <input
                     required
                     type="text"
                     name="news_url"
                     placeholder="Enter a URL"
                     onChange={handleAddFormChange}
+                /> */}
+                <input type="file" name="file" accept="image/*" onChange={e => { // make required?
+                    const file = e.target.files[0]
+                    setAddFormData({...addFormData, file:file})
+                    }}
                 />
                 <button type="submit">Add</button>
             </form>
