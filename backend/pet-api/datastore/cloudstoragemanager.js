@@ -1,11 +1,13 @@
 const { Datastore } = require('@google-cloud/datastore');
+const {Storage} = require('@google-cloud/storage');
+
 const { entity } = require('@google-cloud/datastore/build/src/entity');
 
 const Pet = require('../models/pet');
 const News = require('../models/news');
 const CONFIG = require('../common/config');
 
-class DataStoreManager {
+class CloudStorageManager {
 
     constructor() {
         this.datastore = new Datastore();
@@ -222,5 +224,4 @@ class DataStoreManager {
 
 }
 
-module.exports = DataStoreManager;
-
+module.exports = CloudStorageManager;

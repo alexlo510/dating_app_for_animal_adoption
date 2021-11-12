@@ -2,6 +2,7 @@
 const axios = require('axios').default;
 const { Datastore } = require('@google-cloud/datastore');
 const { entity } = require('@google-cloud/datastore/build/src/entity');
+const {Storage} = require('@google-cloud/storage');
 
 
 async function testClientCall()
@@ -37,5 +38,22 @@ async function testDBConnection() {
     }
 
 }
-testClientCall();
-testDBConnection();
+
+
+async function testUploadImage() {
+    try {
+        // Instantiate a storage client
+        const storage = new Storage();
+        console.log("====storage====");
+        console.log(storage);
+    }
+    catch (err) {
+        console.log(err);
+        throw err;
+    }
+
+}
+
+//testClientCall();
+//testDBConnection();
+testUploadImage();

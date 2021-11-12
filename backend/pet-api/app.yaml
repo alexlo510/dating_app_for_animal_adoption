@@ -17,4 +17,10 @@ runtime: nodejs14
 env_variables:
   OAUTH_CLIENT_SECRET: 'EiEW9JxTEXJAf7_ePgOTgRnL'
   OAUTH_CLIENT_ID: '877518236258-ogldcu9fed1rp9676m2auttl3rhqj8f1.apps.googleusercontent.com'
+
+env: flex
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 1
+
 # [END app_yaml]

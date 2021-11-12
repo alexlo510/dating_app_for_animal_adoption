@@ -65,7 +65,7 @@ router.get('/home', async (req, res) => {
         let google_oauth_url = CONFIG.google_oauth_url;
 
         res.render('./views/Home', {
-            google_oauth_url: google_oauth_url
+            "google_oauth_url": google_oauth_url
         })
     }
     catch (error) {
@@ -79,7 +79,7 @@ router.get('/error', async (req, res) => {
         let render_home_url = CONFIG.view_home_url;
 
         res.render('./views/Error', {
-            render_home_url: render_home_url
+            "render_home_url": render_home_url
         })
     }
     catch (error) {
@@ -87,16 +87,24 @@ router.get('/error', async (req, res) => {
     }
 })
 
-router.get('/profile/:accesstoken', async (req, res) => {
+router.get('/profile', async (req, res) => {
 
     try {
-        let render_id_token = req.params.accesstoken;
-        console.log(render_id_token);
+        let accesstoken = req.user.accesstoken;
+        let owner_id = req.user.owner_id;
+        let alias = req.user.alias;
+
+        console.log("ownerid: " + owner_id);
+        console.log("alias: " + alias);
+        console.log("accesstoken: ", accesstoken); 
+
         let render_home_url = CONFIG.view_home_url;
 
         res.render('./views/Profile', {
-            render_home_url: render_home_url,
-            render_id_token: render_id_token
+            "render_home_url": render_home_url,
+            "render_accesstoken": accesstoken,
+            "render_owner_id": owner_id,
+            "render_alias": alias
         })
     }
     catch (error) {
