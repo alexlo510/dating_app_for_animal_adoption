@@ -19,13 +19,20 @@ export function UserProvider({ children }) {
                 const owner_id = params.get('owner_id')
                 const res = await Axios.get(`https://pet-shelter-api.uw.r.appspot.com/getProfile?owner_id=${owner_id}`, { withCredentials: true} )
                 //const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/getProfile", { withCredentials: true} )
-                console.log(res);
                 console.log(res.data); // remove after testing
                 if (res.data) {
                     setUser(res.data)
+                    //localStorage.setItem('user', JSON.stringify(res.data))
+                    sessionStorage.setItem('user', JSON.stringify(res.data))
                 }
             }
-            fetchUser();
+            // if (localStorage.getItem('user')) {
+            //     setUser(JSON.parse(localStorage.getItem('user')))
+            if (sessionStorage.getItem('user')) {
+                setUser(JSON.parse(sessionStorage.getItem('user')))
+            } else {
+                fetchUser();
+            }
         } catch (err) {
             console.log(err);
         }
