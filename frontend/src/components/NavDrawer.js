@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import Axios from 'axios';
 import { Drawer, IconButton, List, ListItem, Typography } from "@mui/material/";
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { navLinks } from './Navbar';
 import { useUserContext } from './UserContext.js';
 
@@ -12,6 +13,7 @@ const linkStyle = {
 export default function NavDrawer() {
     const [openDrawer, setOpenDrawer] = useState(false);
     const { user, setUser } = useUserContext();
+    const history = useHistory();
 
     const handleMenuClick = () => {
         setOpenDrawer(!openDrawer)
@@ -21,16 +23,24 @@ export default function NavDrawer() {
         setOpenDrawer(false)
     }
 
-    const handleLogout = () => {
-        // handle logout
+    const handleLogout = async () => {
         setUser(null)
         setOpenDrawer(false)
+        sessionStorage.clear()
+        //localStorage.clear()
+        history.push("/")
+        try {
+            const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/logout")
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (
         <>
         <Drawer open={openDrawer} onClose={handleDrawerClose}>
             <List>
+                {user && <Typography variant="h6" sx={{paddingLeft: 1}}>{user.alias}</Typography>}
                 {navLinks.map((navLink) => (
                     user ? (navLink.path === "/signUp" || navLink.path === "/login" ? null : <ListItem key={navLink.id}>
                         <Link to={navLink.path} style={linkStyle}>
@@ -43,10 +53,10 @@ export default function NavDrawer() {
                             </Link>
                         </ListItem>
                 ))}
-                {user ? 
+                {user ?
                     <ListItem>
                         <Typography variant="h6" color="teal" onClick={handleLogout} sx={{cursor: "pointer"}}>Logout</Typography>
-                    </ListItem> 
+                    </ListItem>
                 : null}
             </List>
         </Drawer>
