@@ -1,6 +1,7 @@
 import React from 'react';
+import Axios from 'axios';
 import { Typography, AppBar, Button, List, ListItem, Toolbar, useMediaQuery } from '@mui/material/';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { theme } from './Theme.js';
 import NavDrawer from './NavDrawer.js';
 import { useUserContext } from './UserContext.js';
@@ -46,10 +47,18 @@ export const navLinks = [
 export default function Navbar() {
     const mobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const { user, setUser } = useUserContext();
+    const history = useHistory();
 
-    const handleLogout = () => {
-        // handle logout
+    const handleLogout = async () => {
         setUser(null)
+        sessionStorage.clear()
+        //localStorage.clear()
+        history.push("/")
+        try {
+            const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/logout")
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (
@@ -73,12 +82,17 @@ export default function Navbar() {
                             </Link>
                         </ListItem>
                     ))}
-                    {user ? 
-                        <ListItem>
-                            <Button variant="contained" sx={{...buttonStyle}}>
-                                <Typography variant="h6" sx={{...wordStyle}} onClick={handleLogout}>Logout</Typography>
-                            </Button>
-                        </ListItem> 
+                    {user ?
+                        <>
+                            <ListItem>
+                                    <Typography variant="h6" sx={{...wordStyle}}>{user.alias}</Typography>
+                            </ListItem>
+                            <ListItem>
+                                <Button variant="contained" sx={{...buttonStyle}}>
+                                    <Typography variant="h6" sx={{...wordStyle}} onClick={handleLogout}>Logout</Typography>
+                                </Button>
+                            </ListItem> 
+                        </>
                     : null
                     }
                 </List>
