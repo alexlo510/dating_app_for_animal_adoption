@@ -20,11 +20,12 @@ function App() {
       <Switch>
         <Route path='/' exact component={Home} />
         <Route path='/adopt' component={Adopt} />
-        <Route path='/login' component={Login} />
-        <Route path='/signUp' component={SignUp} />
-        {/* <ProtectedRoute path='/login' component={Login} isAuth={!user}/>
-        <ProtectedRoute path='/signUp' component={SignUp} isAuth={!user}/>
-        <ProtectedRoute path='/adminNews' component={AdminNews} isAuth={user.role == "admin"}/>
+        {/* <Route path='/login' component={Login} />
+        <Route path='/signUp' component={SignUp} /> */}
+      
+        <ProtectedRoute path='/login' component={Login} isAuth={!sessionStorage.getItem("user")}/>
+        <ProtectedRoute path='/signUp' component={SignUp} isAuth={!sessionStorage.getItem("user")}/>
+        {/* <ProtectedRoute path='/adminNews' component={AdminNews} isAuth={user.role == "admin"}/>
         <ProtectedRoute path='/adminPets' component={AdminPets} isAuth={user.role == "admin"}/> */}
         {/* Change user.role == "admin" depending on how the backend passes the admin role*/}
       </Switch>
