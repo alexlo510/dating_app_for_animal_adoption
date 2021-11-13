@@ -9,7 +9,8 @@ const oauth_client_id ='570264399882-v8tm7os3eb1hnn6lbfbla5nl03d486u4.apps.googl
 const oauth_client_secret ='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';
 const oauth_callback_url = baseurl+"/auth/google/callback";
 //const oauth_success_redirect_url = baseurl+"/profile";
-const oauth_success_redirect_url = "http://localhost:3000/home";
+const oauth_success_redirect_url = "http://localhost:3000";
+//const oauth_success_redirect_url = "http://localhost:3000/profile";
 
 
 let view_home_url =baseurl+'/home';

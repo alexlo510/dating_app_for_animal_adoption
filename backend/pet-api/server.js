@@ -32,52 +32,51 @@ const petsrouter = require('./routes/pets_handler');
 const newsrouter = require('./routes/news_handler');
 const viewsrouter = require('./routes/views_handler');
 
+let users_dict = {};
+let retaccesstoken;
 
 
 app.enable('trust proxy');
 app.use(express.json());
 app.use(session({secret: 'secret1234!!!',saveUninitialized: true,resave: true}));
-
-//app.use(cors({
-//    origin: ["http://localhost:3000","https://pet-shelter-fe.wl.r.appspot.com"],
-//    credentials: true
-//}));
-//var cors = require('cors');    
+    
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-let accesstoken =null;
 passport.use(new GoogleStrategy({
     clientID: CONFIG.oauth_client_id,
     clientSecret: CONFIG.oauth_client_secret,
     callbackURL: CONFIG.oauth_callback_url
   },
-  async function(accessToken, refreshToken, profile, cb) {
+   async function(accessToken, refreshToken, profile, cb) {
     // called when successfully logged in
     console.log("successfully logged in");
     let owner_id = profile.id;
     let alias = profile.displayName;
     const date_created = new Date().toISOString().replace('T',' ').substr(0, 10);
 
-    let retuser = {
+    let user = {
         "owner_id": profile.id,
         "alias": profile.displayName,
         "accesstoken": accessToken 
     }
+
+    users_dict[accessToken] = user;
 
     const test = await dsm.getUserByOwnerId(owner_id);
 
     // if user doesn't exist, insert
     if (test[0].length == 0) {
         console.log("====insert into DB====");
-        console.log("ownerid: " + retuser.owner_id);
-        console.log("alias: " + retuser.alias);
-        console.log("accesstoken: ", retuser.accesstoken); 
+        console.log("ownerid: " + user.owner_id);
+        console.log("alias: " + user.alias);
+        console.log("accesstoken: ", user.accesstoken); 
         await dsm.insertUser(owner_id, alias, date_created);
     }
-    cb(null, retuser);
+    retaccesstoken = accessToken;
+    cb(null, user);
   }
 ));
 
@@ -104,16 +103,24 @@ app.get('/auth/google/callback',
     passport.authenticate('google', {failureRedirect: '/error'}),
     function(req, res) {
         // Need to change this to react client's entry url. TO-DO
-        res.redirect(CONFIG.oauth_success_redirect_url);
+        res.redirect(CONFIG.oauth_success_redirect_url+"?accesstoken="+retaccesstoken);
     }
 );
 
-app.get('/getProfile', async (req, res) => {
 
-    console.log("=====Request Getting User=====");
-    console.log(req.user);
+
+app.get('/getProfile', (req, res) => {
+
+    console.log("=====Request Getting User =====");
+    let accesstoken = req.query.accesstoken
+    console.log("accesstoken: "+ accesstoken);
+
     try {
-        res.send(req.user);
+        let retuser = users_dict[accesstoken]
+        console.log(retuser);
+
+        //res.user = retuser;
+        res.send(retuser);
         console.log("=====Response Sent=====");
     }
     catch (error) {
@@ -123,11 +130,20 @@ app.get('/getProfile', async (req, res) => {
 });
 
 
-app.get('/logout', async (req, res) => {
+app.get('/logout', (req, res) => {
 
     console.log("=====Request Loging out User=====");
 
     try {
+        let accesstoken = req.query.accesstoken;
+        let retuser = users_dict[accesstoken]
+        
+        if (retuser) {
+            console.log("found accesstoken: " + accesstoken)
+            console.log("removing from dictionary")
+            delete users_dict[accesstoken];
+        }
+        console.log(req.user);
         if (req.user) {
             req.logout();     
         }
