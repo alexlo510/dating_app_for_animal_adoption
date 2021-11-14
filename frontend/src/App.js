@@ -21,17 +21,11 @@ function App() {
       <Navbar />
       <Switch>
         <Route path='/' exact component={Home} />
-        <Route path='/adminNews' component={AdminNews} />
-        <Route path='/adminPets' component={AdminPets} />
+        <ProtectedRoute path='/adminNews' component={AdminNews} isAuth={sessionStorage.getItem("user") && JSON.parse(sessionStorage.getItem("user")).is_admin}/>
+        <ProtectedRoute path='/adminPets' component={AdminPets} isAuth={sessionStorage.getItem("user") && JSON.parse(sessionStorage.getItem("user")).is_admin}/>
         <Route path='/adopt' component={Adopt} />
-        {/* <Route path='/login' component={Login} />
-        <Route path='/signUp' component={SignUp} /> */}
-      
         <ProtectedRoute path='/login' component={Login} isAuth={!sessionStorage.getItem("user")}/>
         <ProtectedRoute path='/signUp' component={SignUp} isAuth={!sessionStorage.getItem("user")}/>
-        {/* <ProtectedRoute path='/adminNews' component={AdminNews} isAuth={user.role == "admin"}/>
-        <ProtectedRoute path='/adminPets' component={AdminPets} isAuth={user.role == "admin"}/> */}
-        {/* Change user.role == "admin" depending on how the backend passes the admin role*/}
       </Switch>
     </>
   );
