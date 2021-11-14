@@ -49,13 +49,13 @@ export default function Navbar() {
     const { user, setUser } = useUserContext();
     const history = useHistory();
 
-    const handleLogout = async () => {
-        setUser(null)
-        sessionStorage.clear()
-        //localStorage.clear()
-        history.push("/")
+    const handleLogout = () => {
         try {
-            const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/logout")
+            const res = Axios.get(`https://pet-shelter-api.uw.r.appspot.com/logout?accesstoken=${user.accesstoken}`)
+            setUser(null)
+            sessionStorage.clear()
+            //localStorage.clear()
+            history.push("/")
         } catch (err) {
             console.log(err);
         }
