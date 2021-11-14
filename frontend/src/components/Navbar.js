@@ -84,7 +84,7 @@ export default function Navbar() {
                 {mobileView ? (<NavDrawer/>) : (
                 <List sx={{...navLinksStyle}}>
                     {navLinks.map((navLink) => (
-                        navLink.auth == "all" ? 
+                        navLink.auth === "all" ? 
                         <ListItem key={navLink.id}>
                             <Link to={navLink.path} style={linkStyle}>
                                 {(navLink.path === "/signUp" || navLink.path === "/login" ?
@@ -96,7 +96,7 @@ export default function Navbar() {
                             </Link>
                         </ListItem> 
                         :
-                        (navLink.auth == "admin" && user && user.is_admin) ? 
+                        (navLink.auth === "admin" && user && user.is_admin) ? 
                         <ListItem key={navLink.id}>
                             <Link to={navLink.path} style={linkStyle}>
                                 {(navLink.path === "/signUp" || navLink.path === "/login" ?

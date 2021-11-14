@@ -42,7 +42,7 @@ export default function NavDrawer() {
             <List>
                 {user && <Typography variant="h6" sx={{paddingLeft: 1}}>{user.alias}</Typography>}
                 {navLinks.map((navLink) => (
-                    navLink.auth == "all" ? 
+                    navLink.auth === "all" ? 
                         (user ? (navLink.path === "/signUp" || navLink.path === "/login" ? null : 
                             <ListItem key={navLink.id}>
                                 <Link to={navLink.path} style={linkStyle}>
@@ -55,7 +55,7 @@ export default function NavDrawer() {
                                 </Link>
                             </ListItem>)
                     :
-                    (navLink.auth == "admin" && user && user.is_admin) ? 
+                    (navLink.auth === "admin" && user && user.is_admin) ? 
                         <ListItem key={navLink.id}>
                             <Link to={navLink.path} style={linkStyle}>
                                 <Typography variant="h6" color="teal" onClick={handleDrawerClose}>{navLink.title}</Typography>
