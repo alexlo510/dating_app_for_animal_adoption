@@ -6,6 +6,7 @@ import AlertMessage from '../components/AlertMessage';
 import AdoptionSearchBar from '../components/AdoptionSearchBar';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { useUserContext } from '../components/UserContext.js';
 
 const sampleData = [{
     "id" : 1,
@@ -65,6 +66,7 @@ export default function Adopt() {
     const [disableButtons, setDisableButtons] = useState(false)
     const [adoptSuccess, setAdoptSuccess] = useState(false)
     const [adoptFail, setAdoptFail] = useState(false)
+    const { user } = useUserContext();
     
     useEffect(() => {
         try {
@@ -116,8 +118,12 @@ export default function Adopt() {
     async function handleAdoptClick(animalID) {
         console.log("Adopting", animalID); // remove after testing
         try {
-            const payload = {availability : "Pending"}
-            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalID}`, payload)
+            const payload = {availability : "Pending", adoptedby : `${user.owner_id}`}
+            const config = {
+                headers: { Authorization: `Bearer ${user.accesstoken}` }
+            };
+            console.log("config:", config);
+            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalID}`, payload, config)
             console.log(res);
             setAdoptSuccess(true);
             setAnimal({...animal, "availability":"Pending"}) // switch to just set res data? 
