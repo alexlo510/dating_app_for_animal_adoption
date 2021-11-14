@@ -23,14 +23,14 @@ export default function NavDrawer() {
         setOpenDrawer(false)
     }
 
-    const handleLogout = async () => {
-        setUser(null)
-        setOpenDrawer(false)
-        sessionStorage.clear()
-        //localStorage.clear()
-        history.push("/")
+    const handleLogout = () => {
         try {
-            const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/logout")
+            const res = Axios.get(`https://pet-shelter-api.uw.r.appspot.com/logout?accesstoken=${user.accesstoken}`)
+            setUser(null)
+            setOpenDrawer(false)
+            sessionStorage.clear()
+            //localStorage.clear()
+            history.push("/")
         } catch (err) {
             console.log(err);
         }
