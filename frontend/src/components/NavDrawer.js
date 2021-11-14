@@ -42,16 +42,25 @@ export default function NavDrawer() {
             <List>
                 {user && <Typography variant="h6" sx={{paddingLeft: 1}}>{user.alias}</Typography>}
                 {navLinks.map((navLink) => (
-                    user ? (navLink.path === "/signUp" || navLink.path === "/login" ? null : <ListItem key={navLink.id}>
-                        <Link to={navLink.path} style={linkStyle}>
-                            <Typography variant="h6" color="teal" onClick={handleDrawerClose}>{navLink.title}</Typography>
-                        </Link>
-                    </ListItem>)
-                    :   <ListItem key={navLink.id}>
+                    navLink.auth == "all" ? 
+                        (user ? (navLink.path === "/signUp" || navLink.path === "/login" ? null : 
+                            <ListItem key={navLink.id}>
+                                <Link to={navLink.path} style={linkStyle}>
+                                    <Typography variant="h6" color="teal" onClick={handleDrawerClose}>{navLink.title}</Typography>
+                                </Link>
+                            </ListItem>)
+                        :   <ListItem key={navLink.id}>
+                                <Link to={navLink.path} style={linkStyle}>
+                                    <Typography variant="h6" color="teal" onClick={handleDrawerClose}>{navLink.title}</Typography>
+                                </Link>
+                            </ListItem>)
+                    :
+                    (navLink.auth == "admin" && user && user.is_admin) ? 
+                        <ListItem key={navLink.id}>
                             <Link to={navLink.path} style={linkStyle}>
                                 <Typography variant="h6" color="teal" onClick={handleDrawerClose}>{navLink.title}</Typography>
                             </Link>
-                        </ListItem>
+                        </ListItem> : null
                 ))}
                 {user ?
                     <ListItem>
