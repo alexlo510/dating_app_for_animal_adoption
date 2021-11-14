@@ -33,22 +33,27 @@ export const navLinks = [
         id: 1,
         path:"/adopt",
         title:"Adopt",
+        auth: "all"
     }, {
         id: 4,
         path: "/adminNews",
         title: "Manage News",
+        auth: "admin"
     }, {
         id: 5,
         path: "/adminPets",
         title: "Manage Pets",
+        auth: "admin"
     }, {   
         id: 2,
         path:"/signUp",
         title:"Sign Up",
+        auth: "all"
     }, {
         id: 3,
         path: "/login",
         title: "Login",
+        auth: "all"
     },
 ]
 
@@ -79,6 +84,7 @@ export default function Navbar() {
                 {mobileView ? (<NavDrawer/>) : (
                 <List sx={{...navLinksStyle}}>
                     {navLinks.map((navLink) => (
+                        navLink.auth == "all" ? 
                         <ListItem key={navLink.id}>
                             <Link to={navLink.path} style={linkStyle}>
                                 {(navLink.path === "/signUp" || navLink.path === "/login" ?
@@ -88,7 +94,19 @@ export default function Navbar() {
                                     : (<Typography variant="h6" sx={{...wordStyle}}>{navLink.title}</Typography>)
                                 )}
                             </Link>
-                        </ListItem>
+                        </ListItem> 
+                        :
+                        (navLink.auth == "admin" && user && user.is_admin) ? 
+                        <ListItem key={navLink.id}>
+                            <Link to={navLink.path} style={linkStyle}>
+                                {(navLink.path === "/signUp" || navLink.path === "/login" ?
+                                    (!user ? <Button variant="contained" sx={{...buttonStyle}}>
+                                        <Typography variant="h6" sx={{...wordStyle}}>{navLink.title}</Typography>
+                                    </Button> : null)
+                                    : (<Typography variant="h6" sx={{...wordStyle}}>{navLink.title}</Typography>)
+                                )}
+                            </Link>
+                        </ListItem> : null
                     ))}
                     {user ?
                         <>
