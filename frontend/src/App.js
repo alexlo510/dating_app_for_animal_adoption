@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Navbar from './components/Navbar.js';
 import AdminNews from './pages/AdminNews.js';
 import AdminPets from './pages/AdminPets.js';
@@ -21,11 +21,11 @@ function App() {
       <Navbar />
       <Switch>
         <Route path='/' exact component={Home} />
-        <ProtectedRoute path='/adminNews' component={AdminNews} isAuth={sessionStorage.getItem("user") && JSON.parse(sessionStorage.getItem("user")).is_admin}/>
-        <ProtectedRoute path='/adminPets' component={AdminPets} isAuth={sessionStorage.getItem("user") && JSON.parse(sessionStorage.getItem("user")).is_admin}/>
+        <ProtectedRoute path='/adminNews' component={AdminNews} isAuth={user && user.is_admin}/>
+        <ProtectedRoute path='/adminPets' component={AdminPets} isAuth={user && user.is_admin}/>
         <Route path='/adopt' component={Adopt} />
-        <ProtectedRoute path='/login' component={Login} isAuth={!sessionStorage.getItem("user")}/>
-        <ProtectedRoute path='/signUp' component={SignUp} isAuth={!sessionStorage.getItem("user")}/>
+        <ProtectedRoute path='/login' component={Login} isAuth={!user}/>
+        <ProtectedRoute path='/signUp' component={SignUp} isAuth={!user}/>
       </Switch>
     </>
   );
