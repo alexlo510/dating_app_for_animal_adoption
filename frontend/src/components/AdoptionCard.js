@@ -50,7 +50,7 @@ export default function AdoptionCard(props) {
                 </Typography>
             </CardContent>
             <CardActions>
-                {availability ? (availability.toLowerCase() === "available" && user) ?
+                {availability ? ((availability.toLowerCase() === "available" && user) ?
                 <Button size="small" sx={buttonStyle} onClick={() => handleAdoptClick(id)}>
                     <Typography variant="body1" color="white">Adopt</Typography>
                 </Button>
