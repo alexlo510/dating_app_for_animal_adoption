@@ -53,7 +53,7 @@ export const navLinks = [
 ]
 
 export default function Navbar() {
-    const mobileView = useMediaQuery(theme.breakpoints.down("sm"));
+    const mobileView = useMediaQuery(theme.breakpoints.down("md"));
     const { user, setUser } = useUserContext();
     const history = useHistory();
 
