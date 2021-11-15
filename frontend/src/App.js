@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import Navbar from './components/Navbar.js';
 import AdminNews from './pages/AdminNews.js';
 import AdminPets from './pages/AdminPets.js';
