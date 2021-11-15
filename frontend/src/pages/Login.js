@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { Button, Container, Paper, TextField, Typography } from '@mui/material/';
 import { Link } from "react-router-dom";
+import {FcGoogle} from 'react-icons/fc';
 
 const paperStyle = {
     display: 'flex',
@@ -25,6 +26,15 @@ const signUpLinkStyle = {
     color: "blue",
 }
 
+const googleButtonStyle = {
+    marginTop: 1, 
+    backgroundColor: "white", 
+    color: "gray",
+    "&:hover": {
+        background: "none",
+    }
+}
+
 export default function Login() {
 
     const [username, setUsername] = useState('')
@@ -33,6 +43,11 @@ export default function Login() {
     const handleSubmit = (e) => {
         e.preventDefault()
         console.log(username, password);
+    }
+
+    const handleGoogleLogin = () => {
+        const googleAuthUrl = "https://pet-shelter-api.uw.r.appspot.com/auth/google"
+        window.open(googleAuthUrl, "_self")
     }
 
     return (
@@ -50,6 +65,7 @@ export default function Login() {
                             variant="standard" name="password" type="password" required fullWidth label="Password" sx={textFieldStyle}
                         />
                         <Button type="submit" color="primary" variant="contained" fullWidth sx={buttonStyle}>Login</Button>
+                        <Button variant="contained" fullWidth onClick={handleGoogleLogin} sx={googleButtonStyle} startIcon={<FcGoogle/>}>Login with Google</Button>
                     </form>
                     <Typography variant="caption">Need an account? 
                         <Link to="/signUp" style={signUpLinkStyle}> Sign Up</Link>

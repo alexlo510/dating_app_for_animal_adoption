@@ -58,8 +58,8 @@ export default function LatestNews() {
             <Container>
                 <Grid container justifyContent="center" sx={{marginTop: 2}}>
                         {!data && <div style={{display: 'flex', justifyContent: 'center'}}><CircularProgress/></div>}
-                        {data && data.map((news) => 
-                            <Grid item sx={{margin: 2}}>
+                        {data && data.map((news, index) => 
+                            <Grid key={index} item sx={{margin: 2}}>
                                 <NewsCard {...news}/>
                             </Grid>)
                         }

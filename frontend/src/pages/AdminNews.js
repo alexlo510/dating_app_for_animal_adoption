@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import { Container } from '@mui/material/';
 import NewsReadRow from '../components/NewsReadRow';
 import NewsEditRow from '../components/NewsEditRow';
+import { useUserContext } from '../components/UserContext.js';
 
 
 export default function Admin() {
@@ -19,6 +20,7 @@ export default function Admin() {
         content: "",
         news_url: "",
     });
+    const { user } = useUserContext();
 
     useEffect(() => {
         try {

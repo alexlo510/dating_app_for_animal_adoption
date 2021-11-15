@@ -5,6 +5,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import PetForm from '../components/PetForm';
 import AnimalReadRow from '../components/AnimalReadRow';
 import AnimalEditRow from '../components/AnimalEditRow';
+import { useUserContext } from '../components/UserContext.js';
 
 export default function AdminPets() {
     const [animals, setAnimals] = useState([])
@@ -25,6 +26,7 @@ export default function AdminPets() {
         name: "",
         type: "",
     });
+    const { user } = useUserContext();
 
     useEffect(() => {
         try {
