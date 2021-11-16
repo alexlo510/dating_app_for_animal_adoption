@@ -40,7 +40,11 @@ export default function NavDrawer() {
         <>
         <Drawer open={openDrawer} onClose={handleDrawerClose}>
             <List>
-                {user && <Typography variant="h6" sx={{paddingLeft: 1}}>{user.alias}</Typography>}
+                {user && 
+                <Link to='/profile' style={linkStyle}>
+                    <Typography variant="h6" color="black" sx={{paddingLeft: 2}}>{user.alias}</Typography>
+                </Link>
+                }
                 {navLinks.map((navLink) => (
                     navLink.auth === "all" ? 
                         (user ? (navLink.path === "/signUp" || navLink.path === "/login" ? null : 
