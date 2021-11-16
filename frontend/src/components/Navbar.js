@@ -111,7 +111,9 @@ export default function Navbar() {
                     {user ?
                         <>
                             <ListItem>
+                                <Link to='/profile' style={linkStyle}>
                                     <Typography variant="h6" sx={{...wordStyle}}>{user.alias}</Typography>
+                                </Link>
                             </ListItem>
                             <ListItem>
                                 <Button variant="contained" sx={{...buttonStyle}}>
