@@ -156,6 +156,38 @@ export default function Adopt() {
         }
     }
 
+    // might not need this if insert the searchFilter prop in handleClick instead. 
+    async function handleFilterClick(fetchID) {
+        console.log("filter click"); // remove later
+        setDisableButtons(prevState => !prevState) // disable buttons        
+        try {
+            async function fetchFilterNewAnimal(fetchID) {
+                //const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
+                // sort list by date
+                //res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
+                
+                //setData(res.data)
+
+                if (fetchID >= data.length) {
+                    fetchID = 0
+                }
+                if (fetchID === -1) {
+                    fetchID = data.length - 1
+                }
+                
+                //setAnimal(data[fetchID])
+                //setIndex(fetchID)
+                setAdoptSuccess(false)
+                setAdoptFail(false)
+            }
+            //await fetchFilterNewAnimal(fetchID);
+            setDisableButtons(prevState => !prevState) // enable button
+        } catch (err) {
+            console.log(err);
+            setDisableButtons(prevState => !prevState) // enable button
+        }
+    }
+
     return (
         <>
             <Container>
@@ -170,12 +202,12 @@ export default function Adopt() {
                 </Grid>
                 <Grid container justifyContent="center" sx={{marginTop: 1}}>
                     <Grid item sx={{marginRight: 2}}>
-                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index - 1)}>
+                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => searchFilter ? handleFilterClick(index-1) : handleClick(index - 1)}>
                             <ChevronLeftIcon sx={{color: "white"}}/>
                         </Button>}
                     </Grid>
                     <Grid item sx={{marginLeft: 2}}>
-                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index + 1)}>
+                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => searchFilter ? handleFilterClick(index + 1) : handleClick(index + 1)}>
                             <ChevronRightIcon sx={{color: "white"}}/>
                         </Button>}
                     </Grid>
