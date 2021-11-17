@@ -9,6 +9,11 @@ const CONFIG = require('../common/config');
 const {OAuth2Client} = require('google-auth-library');
 const oauth2client = new OAuth2Client(CONFIG.client_id);
 
+const processFile = require("../middleware/upload");
+const { format } = require("util");
+const { Storage } = require("@google-cloud/storage");
+const storage = new Storage();
+const bucket = storage.bucket('pet-shelter-api-images');
 
 const express = require('express');
 const router = express.Router();
@@ -17,7 +22,6 @@ const DataStoreManager = require('../datastore/datastoremanager');
 const Pet = require('../models/pet');
 
 const dsm = new DataStoreManager();
-
 
 
 async function verifyToken(token) {
@@ -145,12 +149,15 @@ router.post('/', async (req, res) => {
 
     console.log("=====Request Inserting a Pet=====");
 
+    await processFile(req, res);
+
     console.log("availability:" + req.body.availability);
     console.log("breed:" + req.body.breed);
     console.log("description:" + req.body.description);
     console.log("disposition:" + req.body.disposition);
     console.log("name:" + req.body.name);
     console.log("type:" + req.body.type);
+    console.log("picture_url:" + req.body.picture_url);
    
     try {
         // if accept is not json, reject, server cannot respond non-json results
@@ -166,14 +173,14 @@ router.post('/', async (req, res) => {
         }
 
         // insert if all conditions are met
-        let picture_url = "https://upload.wikimedia.org/wikipedia/commons/7/79/Trillium_Poncho_cat_dog.jpg";
+        //let picture_url = "https://upload.wikimedia.org/wikipedia/commons/7/79/Trillium_Poncho_cat_dog.jpg";
         const date_created = new Date().toISOString().replace('T',' ').substr(0, 10);
 
-        const key = await dsm.insertPet(req.body.availability, req.body.breed, date_created, req.body.description, req.body.disposition, req.body.name, picture_url, req.body.type);
+        const key = await dsm.insertPet(req.body.availability, req.body.breed, date_created, req.body.description, req.body.disposition, req.body.name, req.body.picture_url, req.body.type);
         console.log("Inserted Pet, id: "+ key.id);
         console.log("Creation date: "+ date_created);
 
-        let petmodel = new Pet(key.id, req.body.availability, req.body.breed, date_created, req.body.description, req.body.disposition, req.body.name, picture_url, req.body.type, null);
+        let petmodel = new Pet(key.id, req.body.availability, req.body.breed, date_created, req.body.description, req.body.disposition, req.body.name, req.body.picture_url, req.body.type, null);
  
         resdata = {
             "id": petmodel.id,
@@ -203,7 +210,7 @@ router.post('/', async (req, res) => {
 router.patch('/:pet_id', async (req, res) => {
     
     console.log("=====Request Updating a Pet using PATCH =====");
-    
+    const bearerHeader = req.headers['authorization']
     console.log("pet_id: "+ req.params.pet_id);
     console.log("availability:" + req.body.availability);
     console.log("breed:" + req.body.breed);
@@ -213,6 +220,8 @@ router.patch('/:pet_id', async (req, res) => {
     console.log("picture_url:" + req.body.picture_url);
     console.log("type:" + req.body.type);
     console.log("adoptedby:" + req.body.adoptedby);
+    console.log("bearer Token:" + bearerHeader);
+    
     
     try {
         // if accept is not json, reject, server cannot respond non-json results

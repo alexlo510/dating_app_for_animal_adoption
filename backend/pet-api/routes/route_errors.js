@@ -22,6 +22,12 @@ const methodnoallowederror = {
     "Error": "Method not allowed"
 };
 
+const fileuploaderror = {
+    "Error": "Error uploading file."
+};
+
+
+
 const notacceptableerror = "Not Acceptable By Client, Server can only respond JSON";
 
 const contenttypeerror = "Server only accepts application/json payload";
@@ -34,5 +40,6 @@ module.exports = {
     unauthorizederror,
     methodnoallowederror,
     notacceptableerror,
-    contenttypeerror
+    contenttypeerror,
+    fileuploaderror
 };

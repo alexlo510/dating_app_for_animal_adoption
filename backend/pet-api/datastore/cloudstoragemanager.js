@@ -1,227 +1,29 @@
-const { Datastore } = require('@google-cloud/datastore');
+const util = require('util');
+const Multer = require('multer');
+const maxSize = 2 * 1024 * 1024;
 const {Storage} = require('@google-cloud/storage');
-
-const { entity } = require('@google-cloud/datastore/build/src/entity');
-
-const Pet = require('../models/pet');
-const News = require('../models/news');
 const CONFIG = require('../common/config');
 
 class CloudStorageManager {
 
     constructor() {
-        this.datastore = new Datastore();
+        this.storage = new Storage();
+        this.bucket = storage.bucket('pet-shelter-api-images');
     }
 
-    async getPets() {
+    async uploadFile() {
   
         try {
-            const query = this.datastore.createQuery('pet');
-            const data = await this.datastore.runQuery(query);
-            const petmodel = new Pet();
-            let ret = petmodel.map(data[0], this.datastore);
-
-            return ret;
+            console.log("====Storage object====");
+            console.log(this.storage);
+            console.log("====Bucket object====");
+            console.log(this.bucket);
         }
         catch (err) {
             console.log(err);
             throw err;
         }
     };
-
-    async getPet(id) {
-        try {
-            const key = this.datastore.key(['pet', Number(id)]);
-            const data = await this.datastore.get(key);
-            return data;
-        }
-        catch(err) {
-            console.log(err);
-            throw err;
-        }
-    }
-
-    async insertPet(availability, breed, date_created, description, disposition, name, picture_url, type) {
-        try {
-            const key = this.datastore.key('pet');
-            const data = {
-                "availability": availability,
-                "breed": breed, 
-                "date_created": date_created,
-                "description": description,
-                "disposition": disposition,
-                "name": name,
-                "picture_url": picture_url,
-                "type": type,
-                "adoptedby": null
-            };
-            await this.datastore.save({"key":key, "data":data})
-            return key;
-        }
-        catch (err) {
-            console.log(err);
-            throw err; 
-        }
-    }
-
-    async updatePet(id, availability, breed, date_created, description, disposition, name, picture_url, type, adoptedby) {
-        try {
-            const key = this.datastore.key(['pet', Number(id)]);
-            const data = {
-                "availability": availability,
-                "breed": breed, 
-                "date_created": date_created,
-                "description": description,
-                "disposition": disposition,
-                "name": name,
-                "picture_url": picture_url,
-                "type": type,
-                "adoptedby": adoptedby
-            };
-            const ret = await this.datastore.save({"key":key, "data":data});
-            return ret;
-        }
-        catch (err) {
-            console.log(err);
-            throw err;
-        }
-    }
-
-    async deletePet(id) {
-        try {
-            const key = this.datastore.key(['pet', Number(id)]);
-            const data = await this.datastore.delete(key);
-            return data;
-        }
-        catch (err) {
-            console.log(err);
-            throw err;
-        }
-    }
-
-
-    async getNewsList() {
-        
-        try {
-
-            const query = this.datastore.createQuery('news');
-            const data = await this.datastore.runQuery(query);
-
-            const newsmodel = new News();
-            let ret = newsmodel.map(data[0], this.datastore);
-
-            return ret;
-        }
-        catch (err) {
-            console.log(err);
-            throw err;
-        }
-    };
-
-    async getNews(id) {
-        try {
-            const key = this.datastore.key(['news', Number(id)]);
-            const data = await this.datastore.get(key);
-            return data;
-        }
-        catch(err) {
-            console.log(err);
-            throw err;
-        }
-    }
-
-    async insertNews(title, content, date_created, news_url) {
-        try {
-            const key = this.datastore.key('news');
-            const data = {
-                "title": title,
-                "content": content, 
-                "date_created": date_created,
-                "news_url": news_url
-            };
-            await this.datastore.save({"key":key, "data":data})
-            return key;
-        }
-        catch (err) {
-            console.log(err);
-            throw err; 
-        }
-    }
-
-    async updateNews(id, title, content, date_created, news_url) {
-        try {
-            const key = this.datastore.key(['news', Number(id)]);
-            const data = {
-                "title": title,
-                "content": content, 
-                "date_created": date_created,
-                "news_url": news_url
-            };
-            const ret = await this.datastore.save({"key":key, "data":data});
-            return ret;
-        }
-        catch (err) {
-            console.log(err);
-            throw err;
-        }
-    }
-
-    async deleteNews(id) {
-        try {
-            const key = this.datastore.key(['news', Number(id)]);
-            const data = await this.datastore.delete(key);
-            return data;
-        }
-        catch (err) {
-            console.log(err);
-            throw err;
-        }
-    }
-
-    async getUserByOwnerId(owner_id) {
-
-        try {
-            const query = this.datastore.createQuery('users').filter('owner_id','=', owner_id);
-            const data = await this.datastore.runQuery(query);
-            return data;
-        }
-        catch (err) {
-            console.log(err);
-            throw err;
-        }
-
-    }
-
-    async insertUser(owner_id, user_alias, date_created) {
-        try {
-            const key = this.datastore.key('users');
-            const data = {
-                "owner_id": owner_id,
-                "user_alias": user_alias,
-                "date_created": date_created
-            };
-            await this.datastore.save({"key":key, "data":data})
-            return key;
-        }
-        catch (err) {
-            console.log(err);
-            throw err; 
-        }
-    }
-
-    async deleteUer(id) {
-        try {
-            const key = this.datastore.key(['users', Number(id)]);
-            const data = await this.datastore.delete(key);
-            return data;
-        }
-        catch (err) {
-            console.log(err);
-            throw err;
-        }
-    }
-
-
 }
 
 module.exports = CloudStorageManager;

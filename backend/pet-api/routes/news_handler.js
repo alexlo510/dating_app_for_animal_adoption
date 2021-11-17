@@ -95,6 +95,7 @@ router.post('/', async (req, res) => {
 
     console.log("title:" + req.body.title);
     console.log("content:" + req.body.content);
+    console.log("news_url:" + req.body.news_url);
    
     try {
         // if accept is not json, reject, server cannot respond non-json results
@@ -110,15 +111,16 @@ router.post('/', async (req, res) => {
         }
 
         // insert if all conditions are met
-        let news_url = "https://upload.wikimedia.org/wikipedia/commons/e/ea/Dog_coat_variation.png";
+        //let news_url = "https://upload.wikimedia.org/wikipedia/commons/e/ea/Dog_coat_variation.png";
+        
         const date_created = new Date().toISOString().replace('T',' ').substr(0, 10);
 
-        const key = await dsm.insertNews(req.body.title, req.body.content, date_created, news_url)
+        const key = await dsm.insertNews(req.body.title, req.body.content, date_created, req.body.news_url)
 
         console.log("Inserted News, id: "+ key.id);
         console.log("Creation date: "+ date_created);
         
-        let newsmodel = new News(key.id, req.body.title, req.body.content, date_created, news_url);
+        let newsmodel = new News(key.id, req.body.title, req.body.content, date_created, req.body.news_url);
 
         resdata = {
             "id": newsmodel.id,

@@ -4,9 +4,7 @@ const crypto = require('crypto');
 const CONFIG = require('./common/config');
 
 const Joi = require('joi')
-const validator = require('express-joi-validation').createValidator({
-    passError: true
-});
+const validator = require('express-joi-validation').createValidator({ passError: true });
 
 const publicip = require('public-ip');
 
@@ -31,6 +29,7 @@ const multer = require('multer');
 const petsrouter = require('./routes/pets_handler');
 const newsrouter = require('./routes/news_handler');
 const viewsrouter = require('./routes/views_handler');
+const uploadrouter = require('./routes/upload_handler');
 
 let users_dict = {};
 let retaccesstoken;
@@ -56,11 +55,13 @@ passport.use(new GoogleStrategy({
     let owner_id = profile.id;
     let alias = profile.displayName;
     const date_created = new Date().toISOString().replace('T',' ').substr(0, 10);
+    let is_admin = true;
 
     let user = {
         "owner_id": profile.id,
         "alias": profile.displayName,
-        "accesstoken": accessToken 
+        "accesstoken": accessToken,
+        "is_admin": true 
     }
 
     users_dict[accessToken] = user;
@@ -73,7 +74,8 @@ passport.use(new GoogleStrategy({
         console.log("ownerid: " + user.owner_id);
         console.log("alias: " + user.alias);
         console.log("accesstoken: ", user.accesstoken); 
-        await dsm.insertUser(owner_id, alias, date_created);
+        console.log("is_admin: ", user.is_admin); 
+        await dsm.insertUser(owner_id, alias, date_created, is_admin);
     }
     retaccesstoken = accessToken;
     cb(null, user);
@@ -85,6 +87,7 @@ passport.serializeUser((user, done) => {
     console.log("owner_id: " + user.owner_id);
     console.log("alias: " + user.alias);
     console.log("accesstoken: ", user.accesstoken); 
+    console.log("is_admin: ", user.is_admin); 
     return done(null, user);
 })
 
@@ -92,7 +95,8 @@ passport.deserializeUser((user, done) => {
     console.log("=====deerialize======");
     console.log("owner_id: " + user.owner_id);
     console.log("alias: " + user.alias);
-    console.log("accesstoken: ", user.accesstoken); 
+    console.log("accesstoken: ", user.accesstoken);
+    console.log("is_admin: ", user.is_admin); 
     return done(null, user);
 })
 
@@ -106,7 +110,6 @@ app.get('/auth/google/callback',
         res.redirect(CONFIG.oauth_success_redirect_url+"?accesstoken="+retaccesstoken);
     }
 );
-
 
 
 app.get('/getProfile', (req, res) => {
@@ -136,8 +139,11 @@ app.get('/logout', (req, res) => {
 
     try {
         let accesstoken = req.query.accesstoken;
+        console.log("accesstoken:" + accesstoken);
+
         let retuser = users_dict[accesstoken]
-        
+        console.log("retuser:" + retuser);
+
         if (retuser) {
             console.log("found accesstoken: " + accesstoken)
             console.log("removing from dictionary")
@@ -158,27 +164,6 @@ app.get('/logout', (req, res) => {
 
 
 
-// GCS
-const multerMid = multer({
-    storage: multer.memoryStorage(),
-    limits: {
-        fileSize: 5 * 1024 * 1024,
-    }
-});
-
-app.disable('x-powered-by')
-app.use(multerMid.single('file'))
-app.use(express.json());
-app.use(express.urlencoded({
-  extended: true
-}));
-
-app.post('/uploads', (req, res, next) => {
-
-})
-
-
-
 // View handler
 app.set('views', path.join(__dirname));
 app.set('view engine', 'hbs');
@@ -190,6 +175,8 @@ app.use('/pets', petsrouter);
 // News handler
 app.use('/news', newsrouter);
 
+// Upload handler
+app.use('/upload', uploadrouter);
 
 
 // Listen to the App Engine-specified port, or 8000 otherwise
