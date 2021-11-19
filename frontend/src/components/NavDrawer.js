@@ -42,7 +42,7 @@ export default function NavDrawer() {
             <List>
                 {user && 
                 <Link to='/profile' style={linkStyle}>
-                    <Typography variant="h6" color="black" sx={{paddingLeft: 2}}>{user.user_alias}</Typography>
+                    <Typography variant="h6" color="black" onClick={handleDrawerClose} sx={{paddingLeft: 2}}>{user.user_alias}</Typography>
                 </Link>
                 }
                 {navLinks.map((navLink) => (
