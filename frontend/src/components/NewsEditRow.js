@@ -64,6 +64,7 @@ const EditableRow = ({
                         onClick={handleReplaceImageButtonClick}>
                         Replace Image
                     </button>
+                    {formData.file && <span>{formData.file.name}</span>}
                 </label>
             </TableCell>
             <TableCell>
