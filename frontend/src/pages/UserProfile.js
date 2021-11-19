@@ -14,25 +14,29 @@ const contentStyle = {
 }
 
 export default function UserProfile() {
-    const { user } = useUserContext();
+    const { user, setUser } = useUserContext()
     const [ adoptedAnimals, setAdoptedAnimals] = useState(null)
-    const [ emailNotificationChecked, setEmailNotificationChecked ] = useState(null);
-    const [ disableCheckbox, setDisableCheckbox ] = useState(false);
+    const [ emailNotificationChecked, setEmailNotificationChecked ] = useState(user ? user.email_notifications : JSON.parse(sessionStorage.getItem('user')).email_notifications)
+    const [ disableCheckbox, setDisableCheckbox ] = useState(false)
     
     useEffect(() => {
-        try {
-            // get and set emailNotificationChecked from user
-        } catch (err) {
-            console.log(err);
-        }
+
     }, []);
 
-    const handleEmailPreferenceChange = (event) => {
+    const handleEmailPreferenceChange = async (event) => {
         setDisableCheckbox(prevState => !prevState)
         console.log("CHECK VALUE:", event.target.checked); // remove later 
         setEmailNotificationChecked(event.target.checked);
         // send value to the backend to update
         try {
+            const config = {
+                headers: { Authorization: `Bearer ${user.accesstoken}` }
+            };
+            const payload = {email_notifications : event.target.checked}
+            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/users/${user.id}/settings`, payload, config)
+            setUser( {...user, email_notifications : res.data.email_notifications} )
+            sessionStorage.setItem('user', JSON.stringify({...user, email_notifications: res.data.email_notifications}))
+            setEmailNotificationChecked(res.data.email_notifications)
         } catch (err) {
             console.log(err);
             setDisableCheckbox(prevState => !prevState)
@@ -45,7 +49,7 @@ export default function UserProfile() {
             <Container sx={contentStyle}>
                 <Typography variant="h6" sx={titleStyle} component="div">Profile:</Typography>
                 {user && <Typography variant="body2" component="div">ID: {user.owner_id || ""}</Typography>}
-                {user && <Typography variant="body2" component="div">Name: {user.alias || ""}</Typography>}
+                {user && <Typography variant="body2" component="div">Name: {user.user_alias || ""}</Typography>}
             </Container>
             <Container sx={contentStyle}>
                 <Typography variant="h6" sx={titleStyle} component="div">Adopted Animals:</Typography>
