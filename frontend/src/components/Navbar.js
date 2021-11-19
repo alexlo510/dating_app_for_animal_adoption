@@ -112,7 +112,7 @@ export default function Navbar() {
                         <>
                             <ListItem>
                                 <Link to='/profile' style={linkStyle}>
-                                    <Typography variant="h6" sx={{...wordStyle}}>{user.alias}</Typography>
+                                    <Typography variant="h6" sx={{...wordStyle}}>{user.user_alias}</Typography>
                                 </Link>
                             </ListItem>
                             <ListItem>
