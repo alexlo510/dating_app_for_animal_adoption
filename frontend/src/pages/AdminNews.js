@@ -67,10 +67,13 @@ export default function Admin() {
 
     const handleEditFormChange = (event) => {
         event.preventDefault();
-
+        let fieldValue = "";
         const fieldName = event.target.getAttribute("name");
-        const fieldValue = event.target.value;
-
+        if (fieldName === "file") {
+            fieldValue = event.target.files[0]
+        } else {
+            fieldValue = event.target.value;
+        }
         const newFormData = { ...editFormData };
         newFormData[fieldName] = fieldValue;
 
@@ -81,13 +84,18 @@ export default function Admin() {
         event.preventDefault();
 
         // 1st call for uploading image and getting img_url
-        try {
-            const payload = addFormData.file;
-            const url = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/upload`, payload, config)
-            console.log(url);
-            addFormData.news_url = url;
-        } catch (err) {
-            console.log("Failed to POST: ", err);
+        if (addFormData.file) {
+            try {
+                const payload = new FormData()
+                // append additional data here if needed
+                payload.append("file", addFormData.file);
+                const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/upload`, payload, config)
+                const url = res.data.image_url
+                console.log(url);
+                addFormData.news_url = url;
+            } catch (err) {
+                console.log("Failed to POST: ", err);
+            }
         }
 
         const newArticle = {
@@ -116,14 +124,18 @@ export default function Admin() {
         event.preventDefault();
 
         // 1st call for uploading image and getting img_url
-        try {
-            const payload = editFormData.file;
-            console.log(editFormData.file);
-            const url = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/upload`, payload, config)
-            console.log(url);
-            editFormData.news_url = url;
-        } catch (err) {
-            console.log("Failed to upload img: ", err);
+        if (editFormData.file) {
+            try {
+                const payload = new FormData()
+                // append additional data here if needed
+                payload.append("file", editFormData.file);
+                const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/upload`, payload, config)
+                const url = res.data.image_url
+                console.log(url);
+                editFormData.news_url = url;
+            } catch (err) {
+                console.log("Failed to upload img: ", err);
+            }
         }
 
         const editedArticle = {
