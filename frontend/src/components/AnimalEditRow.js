@@ -1,5 +1,7 @@
 import { Button, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select } from '@mui/material/';
 import React from 'react';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
 import { animalBreeds, animalTypes, availability, dispositions } from '../components/ProfilePropertiesLists.js';
 
 
@@ -26,9 +28,15 @@ const EditableRow = ({
     handleChange,
     handleCancelClick,
 }) => {
+    const fileInput = React.useRef(null);
+
+    const handleReplaceImageButtonClick = event => {
+        fileInput.current.click();
+    };
+
     return (
-        <tr>
-            <td>
+        <TableRow>
+            <TableCell>
                 <input
                     required
                     type="text"
@@ -37,8 +45,8 @@ const EditableRow = ({
                     value={formData.name}
                     onChange={handleChange}
                 ></input>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
                 <FormControl sx={selectStyle}>
                     <InputLabel id="selectLabel">Type</InputLabel>
                     <Select
@@ -56,8 +64,8 @@ const EditableRow = ({
                         ))}
                     </Select>
                 </FormControl>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
                 <FormControl sx={selectStyle}>
                     <InputLabel id="selectLabel">Breed</InputLabel>
                     <Select
@@ -75,8 +83,8 @@ const EditableRow = ({
                         ))}
                     </Select>
                 </FormControl>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
                 <input
                     //required
                     type="text"
@@ -85,8 +93,8 @@ const EditableRow = ({
                     value={formData.description}
                     onChange={handleChange}
                 ></input>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
                 <FormControl sx={{ m: 1, width: 325 }}>
                     <InputLabel id="dispositionLabel">Disposition</InputLabel>
                     <Select
@@ -109,8 +117,8 @@ const EditableRow = ({
                         ))}
                     </Select>
                 </FormControl>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
                 <FormControl sx={selectStyle}>
                     <InputLabel id="selectLabel">Availability</InputLabel>
                     <Select
@@ -128,12 +136,28 @@ const EditableRow = ({
                         ))}
                     </Select>
                 </FormControl>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
+                <label htmlFor="replace_image">
+                    <input
+                        style={{ display: 'none' }}
+                        ref={fileInput}
+                        id="replace_image"
+                        name="file"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleChange}
+                    />
+                    <button type="button" onClick={handleReplaceImageButtonClick}>
+                        Replace Image
+                    </button>
+                </label>
+            </TableCell>
+            <TableCell>
                 <button type="submit">Save</button>
                 <button type="button" onClick={handleCancelClick}>Cancel</button>
-            </td>
-        </tr>
+            </TableCell>
+        </TableRow>
     );
 };
 

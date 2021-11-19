@@ -22,6 +22,7 @@ const MenuProps = {
 
 const AddPetForm = ({
     formData,
+    handleImage,
     handleChange,
     handleSubmit,
 }) => {
@@ -79,7 +80,6 @@ const AddPetForm = ({
                 <FormControl sx={{ m: 1, width: 325 }}>
                     <InputLabel id="dispositionLabel">Disposition</InputLabel>
                     <Select
-                        //required
                         name="disposition"
                         labelId="dispositionLabel"
                         id="disposition"
@@ -115,6 +115,13 @@ const AddPetForm = ({
                         ))}
                     </Select>
                 </FormControl>
+                <input
+                    required
+                    type="file"
+                    name="file"
+                    accept="image/*"
+                    onChange={handleImage}
+                />
                 <Button type="submit" color="primary" variant="contained">Add</Button>
             </form>
         </>

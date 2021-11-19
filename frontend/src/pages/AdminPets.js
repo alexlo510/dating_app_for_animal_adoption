@@ -1,7 +1,15 @@
-import { Container } from '@mui/material/';
+import React, { useEffect, useState, Fragment } from 'react';
 import Axios from "axios";
-import { nanoid } from "nanoid";
-import React, { Fragment, useEffect, useState } from 'react';
+import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TablePagination from '@mui/material/TablePagination';
+import Paper from '@mui/material/Paper';
 import PetForm from '../components/PetForm';
 import AnimalReadRow from '../components/AnimalReadRow';
 import AnimalEditRow from '../components/AnimalEditRow';
@@ -10,14 +18,8 @@ import { useUserContext } from '../components/UserContext.js';
 export default function AdminPets() {
     const [animals, setAnimals] = useState([])
     const [editAnimalId, setEditAnimalId] = useState(null);
-    const [editFormData, setEditFormData] = useState({
-        availability: "",
-        breed: "",
-        description: "",
-        disposition: [],
-        name: "",
-        type: "",
-    });
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [addFormData, setAddFormData] = useState({
         availability: "",
         breed: "",
@@ -25,8 +27,23 @@ export default function AdminPets() {
         disposition: [],
         name: "",
         type: "",
+        picture_url: "",
+        file: "",
+    });
+    const [editFormData, setEditFormData] = useState({
+        availability: "",
+        breed: "",
+        description: "",
+        disposition: [],
+        name: "",
+        type: "",
+        picture_url: "",
+        file: "",
     });
     const { user } = useUserContext();
+    const config = {
+        headers: { Authorization: `Bearer ${user.accesstoken}` }
+    };
 
     useEffect(() => {
         try {
@@ -35,6 +52,19 @@ export default function AdminPets() {
             console.log(err);
         }
     }, []);
+
+    const handleChangePage = (_event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+        console.log(rowsPerPage);
+    };
+
+    const emptyRows =
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - animals.length) : 0;
 
     async function fetchAnimal() {
         const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
@@ -67,20 +97,32 @@ export default function AdminPets() {
     async function handleAddFormSubmit(event) {
         event.preventDefault();
 
+        // 1st call for uploading image and getting img_url
+        try {
+            const payload = addFormData.file;
+            const url = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/pets/`, payload, config)
+            console.log(url);
+            addFormData.url = url;
+
+        } catch (err) {
+            console.log("Failed to upload img: ", err);
+        }
+
         const newAnimal = {
-            // id: nanoid(),
             availability: addFormData.availability,
             breed: addFormData.breed,
             description: addFormData.description,
             disposition: addFormData.disposition,
             name: addFormData.name,
             type: addFormData.type,
+            file: addFormData.file,
         };
 
+        // 2nd call for editting the data
         try {
             console.log("POST: ", newAnimal); // remove after testing
             const payload = newAnimal
-            const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/pets/`, payload)
+            const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/pets/`, payload, config)
             console.log(res);
 
         } catch (err) {
@@ -96,6 +138,16 @@ export default function AdminPets() {
     async function handleEditFormSubmit(event) {
         event.preventDefault();
 
+        // 1st call for uploading image and getting img_url
+        try {
+            const payload = editFormData.file;
+            const url = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/upload`, payload, config)
+            console.log(url);
+            editFormData.picture_url = url;
+        } catch (err) {
+            console.log("Failed to upload image: ", err);
+        }
+
         const editedAnimal = {
             id: editAnimalId,
             availability: editFormData.availability,
@@ -104,21 +156,23 @@ export default function AdminPets() {
             disposition: editFormData.disposition,
             name: editFormData.name,
             type: editFormData.type,
+            picture_url: editFormData.picture_url,
         };
 
         const newAnimals = [...animals];
         const index = animals.findIndex((animal) => animal.id === editAnimalId);
 
+        // 2nd call for editting the data
         try {
             console.log("Index: ", index); // remove after testing
             console.log("PATCH: ", editAnimalId); // remove after testing
             const payload = editedAnimal
-            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${editAnimalId}`, payload)
+            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${editAnimalId}`, payload, config)
             console.log(res);
 
             newAnimals[index] = editedAnimal;
             setAnimals(newAnimals);
-            setEditAnimalId(1);
+            setEditAnimalId(null);
 
         } catch (err) {
             console.log("Failed to PATCH: ", err);
@@ -170,47 +224,74 @@ export default function AdminPets() {
         }
     }
 
+    function handleAddImage(event) {
+        const file = event.target.files[0]
+        setAddFormData({ ...addFormData, file: file })
+    }
+
     return (
         <>
+            <br />
             <Container>
                 <form onSubmit={handleEditFormSubmit}>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Breed</th>
-                                <th>Description</th>
-                                <th>Disposition</th>
-                                <th>Availability</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {animals.map((animal) => (
-                                <Fragment>
-                                    {editAnimalId === animal.id ? (
-                                        <>
+                    <TableContainer component={Paper}>
+                        <Table style={{ whiteSpace: 'pre-wrap' }}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell align="left">Type</TableCell>
+                                    <TableCell align="left">Breed</TableCell>
+                                    <TableCell align="left">Discription</TableCell>
+                                    <TableCell align="left">Disposition</TableCell>
+                                    <TableCell align="left">Availability</TableCell>
+                                    <TableCell align="left">Adopted By</TableCell>
+                                    <TableCell align="right" />
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {(rowsPerPage > 0
+                                    ? animals.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    : animals
+                                ).map((animal) => (
+                                    <Fragment>
+                                        {editAnimalId === animal.id ? (
                                             <AnimalEditRow
                                                 formData={editFormData}
                                                 handleChange={handleEditFormChange}
                                                 handleCancelClick={handleCancelClick}
                                             />
-                                        </>
-                                    ) : (
-                                        <AnimalReadRow
-                                            animal={animal}
-                                            handleEditClick={handleEditClick}
-                                            handleDeleteClick={handleDeleteClick}
-                                        />
-                                    )}
-                                </Fragment>
-                            ))}
-                        </tbody>
-                    </table>
+                                        ) : (
+                                            <AnimalReadRow
+                                                animal={animal}
+                                                handleEditClick={handleEditClick}
+                                                handleDeleteClick={handleDeleteClick}
+                                            />
+                                        )}
+                                    </Fragment>
+                                ))}
+                                {emptyRows > 0 && (
+                                    <TableRow style={{ height: 53 * emptyRows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={animals.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    </TableContainer>
                 </form>
+                <br />
                 <h2>Add an Animal</h2>
                 <PetForm
                     formData={addFormData}
+                    handleImage={handleAddImage}
                     handleChange={handleAddFormChange}
                     handleSubmit={handleAddFormSubmit}
                 />
