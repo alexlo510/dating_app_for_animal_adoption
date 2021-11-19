@@ -143,14 +143,27 @@ export default function Adopt() {
     async function handleSearch(type, breed, disposition, date) {
         console.log(type, breed, disposition, date);
         try {
-            // axios to server
-            // const payload = {type: type, breed: breed, disposition: disposition, date: date}
-            // const res = await Axios.post("testing", payload)
+            //const payload = {type: type, breed: breed, disposition: disposition, date: date}
+            let url = "https://pet-shelter-api.uw.r.appspot.com/pets/filter?"
+
+            if (type) {
+                url += `type=${type}`
+            }
+            if (breed) {
+                url += `breed=${breed}`
+            }
+            
+            const res = await Axios.get(url)
+            // sort list by date
+            res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
+            setData(res.data)
+            setAnimal(res.data[res.data.length - 1]) // set to the latest animal
+            setIndex(res.data.length - 1) // set the index of the animal
             setSearchFilter(true)
             setTypeFilter(type)
             setBreedFilter(breed)
             setDispositionFilter(disposition)
-            setDateFilter(date)
+            setDateFilter(date) 
         } catch (err) {
             console.log(err);
         }
@@ -162,11 +175,20 @@ export default function Adopt() {
         setDisableButtons(prevState => !prevState) // disable buttons        
         try {
             async function fetchFilterNewAnimal(fetchID) {
-                //const res = await Axios.get("https://pet-shelter-api.uw.r.appspot.com/pets")
+                let url = "https://pet-shelter-api.uw.r.appspot.com/pets/filter?"
+
+                if (typeFilter) {
+                    url += `type=${typeFilter}`
+                }
+                if (breedFilter) {
+                    url += `breed=${breedFilter}`
+                }
+            
+                const res = await Axios.get(url)
                 // sort list by date
-                //res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
+                res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
                 
-                //setData(res.data)
+                setData(res.data)
 
                 if (fetchID >= data.length) {
                     fetchID = 0
@@ -175,12 +197,12 @@ export default function Adopt() {
                     fetchID = data.length - 1
                 }
                 
-                //setAnimal(data[fetchID])
-                //setIndex(fetchID)
+                setAnimal(data[fetchID])
+                setIndex(fetchID)
                 setAdoptSuccess(false)
                 setAdoptFail(false)
             }
-            //await fetchFilterNewAnimal(fetchID);
+            await fetchFilterNewAnimal(fetchID);
             setDisableButtons(prevState => !prevState) // enable button
         } catch (err) {
             console.log(err);
