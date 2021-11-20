@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select } from '@mui/material/';
+import { Button, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, TextField } from '@mui/material/';
 import React from 'react';
 import { animalBreeds, animalTypes, availability, dispositions } from '../components/ProfilePropertiesLists.js';
 
@@ -29,12 +29,13 @@ const AddPetForm = ({
     return (
         <>
             <form onSubmit={handleSubmit}>
-                <input
+                <TextField
                     required
                     type="text"
                     name="name"
                     placeholder="Enter a name..."
                     onChange={handleChange}
+                    sx= {{paddingRight: 1}}
                 />
                 <FormControl sx={selectStyle}>
                     <InputLabel id="selectLabel">Type</InputLabel>
@@ -70,14 +71,14 @@ const AddPetForm = ({
                         ))}
                     </Select>
                 </FormControl>
-                <input
+                <TextField
                     //required
                     type="text"
                     name="description"
                     placeholder="Enter a description..."
                     onChange={handleChange}
                 />
-                <FormControl sx={{ m: 1, width: 325 }}>
+                <FormControl sx={{ paddingX: 1, width: 325 }}>
                     <InputLabel id="dispositionLabel">Disposition</InputLabel>
                     <Select
                         name="disposition"
