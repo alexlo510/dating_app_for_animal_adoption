@@ -87,7 +87,7 @@ router.get('/error', async (req, res) => {
     }
 })
 
-router.get('/profile', async (req, res) => {
+router.get('/old/profile', async (req, res) => {
 
     try {
         let accesstoken = req.user.accesstoken;

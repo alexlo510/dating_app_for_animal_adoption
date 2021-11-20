@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
 
         // if there are no news, return error
         if (resdata.length == 0 || resdata == null || resdata =='undefined') {
-            res.status(404).json(ERROR.emptypetlisterror);
+            res.status(404).json(ERROR.nonewsexistserror);
             return;
         }
 
@@ -111,7 +111,6 @@ router.post('/', async (req, res) => {
         }
 
         // insert if all conditions are met
-        //let news_url = "https://upload.wikimedia.org/wikipedia/commons/e/ea/Dog_coat_variation.png";
         
         const date_created = new Date().toISOString().replace('T',' ').substr(0, 10);
 

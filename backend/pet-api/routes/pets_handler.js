@@ -81,7 +81,7 @@ router.get('/', async (req, res) => {
 
         // if there are no pets, return error
         if (resdata.length == 0 || resdata == null || resdata =='undefined') {
-            res.status(404).json(ERROR.emptypetlisterror);
+            res.status(404).json(ERROR.nopetexistserror);
             return;
         }
 
@@ -95,6 +95,45 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/filter', async (req, res) => {
+
+    console.log("=====Request Getting List of Pets + Filter=====");
+
+    try {
+        // if accept is not json, reject, server cannot respond non-json results
+        if (!req.accepts(['application/json'])){
+            res.status(406).end();
+            return;
+        }
+
+        let type = req.query.type;
+        let availability = req.query.availability;
+        let breed = req.query.breed;
+        let disposition = req.query.disposition;
+
+        console.log("Search type: ", type);
+        console.log("Search breed: ", breed);
+        console.log("Search availability: ", availability);
+        console.log("Search disposition: ", disposition);
+
+        let resdata = await dsm.getPetsBySearch(type, availability, breed, disposition); 
+        console.log(resdata);
+
+        // if there are no pets, return error
+        if (resdata.length == 0 || resdata == null || resdata =='undefined') {
+            res.status(404).json(ERROR.nopetexistserror);
+            return;
+        }
+
+        res.status(200).json(resdata);
+
+        console.log("=====Response Sent=====");
+    }
+    catch (error) {
+        console.log(error);
+        res.status(400).send(ERROR.unknownservererrror);
+    }
+});
 
 // Get a pet
 router.get('/:pet_id', async (req, res) => {
@@ -241,7 +280,7 @@ router.patch('/:pet_id', async (req, res) => {
         const test = await dsm.getPet(req.params.pet_id);
 
         if (test[0] == 'undefined' || test[0] == null) {
-            res.status(404).json(ERROR.nopetexistserror);
+            res.status(404).send(ERROR.nopetexistserror);
             return;
         }
 

@@ -2,6 +2,7 @@
 const axios = require('axios').default;
 const crypto = require('crypto');
 const CONFIG = require('./common/config');
+const ERROR = require('./routes/route_errors');
 
 const Joi = require('joi')
 const validator = require('express-joi-validation').createValidator({ passError: true });
@@ -30,6 +31,7 @@ const petsrouter = require('./routes/pets_handler');
 const newsrouter = require('./routes/news_handler');
 const viewsrouter = require('./routes/views_handler');
 const uploadrouter = require('./routes/upload_handler');
+const usersrouter = require('./routes/user_handler');
 
 let users_dict = {};
 let retaccesstoken;
@@ -61,20 +63,22 @@ passport.use(new GoogleStrategy({
         "owner_id": profile.id,
         "alias": profile.displayName,
         "accesstoken": accessToken,
-        "is_admin": true 
+        "is_admin": false,
+        "email_notifications": true
     }
 
     users_dict[accessToken] = user;
 
     const test = await dsm.getUserByOwnerId(owner_id);
 
-    // if user doesn't exist, insert
+    // if user doesn't exist, insert, by default is_admin is false, 
     if (test[0].length == 0) {
         console.log("====insert into DB====");
         console.log("ownerid: " + user.owner_id);
         console.log("alias: " + user.alias);
         console.log("accesstoken: ", user.accesstoken); 
         console.log("is_admin: ", user.is_admin); 
+        console.log("is_admin: ", user.email_notifications); 
         await dsm.insertUser(owner_id, alias, date_created, is_admin);
     }
     retaccesstoken = accessToken;
@@ -101,7 +105,8 @@ passport.deserializeUser((user, done) => {
 })
 
 app.get('/auth/google',
-    passport.authenticate('google', {scope:['profile']}));
+    passport.authenticate('google', {scope:['profile']})
+);
 
 app.get('/auth/google/callback', 
     passport.authenticate('google', {failureRedirect: '/error'}),
@@ -112,18 +117,39 @@ app.get('/auth/google/callback',
 );
 
 
-app.get('/getProfile', (req, res) => {
+app.get('/getProfile', async (req, res) => {
 
     console.log("=====Request Getting User =====");
-    let accesstoken = req.query.accesstoken
-    console.log("accesstoken: "+ accesstoken);
 
     try {
-        let retuser = users_dict[accesstoken]
-        console.log(retuser);
+        let accesstoken = req.query.accesstoken
+        console.log("accesstoken: "+ accesstoken);
 
-        //res.user = retuser;
-        res.send(retuser);
+        if (accesstoken == 'undefined' || accesstoken == null) {
+            return res.status(400).send(ERROR.invalidtokenerror);
+        }
+
+        let dict_user = users_dict[accesstoken]
+        console.log("user in dictionary: " , dict_user);
+
+        if (dict_user == 'undefined' || dict_user == null) {
+            return res.status(400).send(ERROR.invalidtokenerror);
+        }
+
+        let owner_id = dict_user.owner_id;
+        console.log("user owner_id: " , owner_id);
+
+        let retuser = await dsm.getUserByOwnerId(owner_id);
+        
+        if (retuser.length == 0 || retuser == 'undefined' || retuser == null) {
+            return res.status(404).send(ERROR.nonuserexistserror);
+        }
+
+        retuser[0].accesstoken = accesstoken;
+        
+        console.log(retuser[0]);
+
+        res.send(retuser[0]);
         console.log("=====Response Sent=====");
     }
     catch (error) {
@@ -132,7 +158,6 @@ app.get('/getProfile', (req, res) => {
     }
 });
 
-
 app.get('/logout', (req, res) => {
 
     console.log("=====Request Loging out User=====");
@@ -140,6 +165,10 @@ app.get('/logout', (req, res) => {
     try {
         let accesstoken = req.query.accesstoken;
         console.log("accesstoken:" + accesstoken);
+
+        if (accesstoken == 'undefined' || accesstoken == null) {
+            return res.status(400).send(ERROR.noaccesstokenerror);
+        }
 
         let retuser = users_dict[accesstoken]
         console.log("retuser:" + retuser);
@@ -177,6 +206,9 @@ app.use('/news', newsrouter);
 
 // Upload handler
 app.use('/upload', uploadrouter);
+
+// Users handler
+app.use('/users', usersrouter);
 
 
 // Listen to the App Engine-specified port, or 8000 otherwise
