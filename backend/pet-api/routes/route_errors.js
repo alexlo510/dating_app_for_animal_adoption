@@ -1,9 +1,13 @@
 const nopetexistserror = {
-    "Error": "No Pet with this pet_id exists"
+    "Error": "No Pet exists"
 };
 
 const nonewsexistserror = {
-    "Error": "No News Item with this news_id exists"
+    "Error": "No News Item exists"
+};
+
+const nonuserexistserror = {
+    "Error": "No User exists"
 };
 
 const unknownservererrror = {
@@ -11,7 +15,7 @@ const unknownservererrror = {
 };
 
 const invalidtokenerror = {
-    "Error": "Missing or invalid id_token"
+    "Error": "Missing or invalid accesstoken"
 };
 
 const unauthorizederror = {
@@ -22,6 +26,11 @@ const methodnoallowederror = {
     "Error": "Method not allowed"
 };
 
+const fileuploaderror = {
+    "Error": "Error uploading file"
+};
+
+
 const notacceptableerror = "Not Acceptable By Client, Server can only respond JSON";
 
 const contenttypeerror = "Server only accepts application/json payload";
@@ -29,10 +38,12 @@ const contenttypeerror = "Server only accepts application/json payload";
 module.exports = {
     nopetexistserror,
     nonewsexistserror,
+    nonuserexistserror,
     unknownservererrror,
     invalidtokenerror,
     unauthorizederror,
     methodnoallowederror,
     notacceptableerror,
-    contenttypeerror
+    contenttypeerror,
+    fileuploaderror
 };

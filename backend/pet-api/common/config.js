@@ -10,14 +10,14 @@ const oauth_client_secret ='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';
 const oauth_callback_url = baseurl+"/auth/google/callback";
 //const oauth_success_redirect_url = baseurl+"/profile";
 const oauth_success_redirect_url = "http://localhost:3000";
-//const oauth_success_redirect_url = "http://localhost:3000/profile";
 
 
 let view_home_url =baseurl+'/home';
 let google_oauth_url = baseurl+"/auth/google";
 
-const petbaseurl = baseurl+"/pets"
-const newsbaseurl = baseurl+"/news"
+const petbaseurl = baseurl+"/pets";
+const newsbaseurl = baseurl+"/news";
+const userbaseurl = baseurl+"/users"
 
 module.exports = {
     petbaseurl,

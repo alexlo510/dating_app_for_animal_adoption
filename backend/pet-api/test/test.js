@@ -39,8 +39,10 @@ async function testClientCall2()
 async function testClientGetProfile()
 {
     try {
-        let accesstoken = "ya29.a0ARrdaM9KQYpvWaySIGCdRQg3GO3Vf_8-I1iTiyHjMTBihNG6fwyuo0JMQDul7VqWv2hRCWYSdtUhK-DhJzIf4GBL7oIxZh_vQKoARoM9mLtcIsinAkPBPz6Ctu-Z34pkgC0cTiAJ8XJ_89V-2u2fTVQHfU6bDg";
+        let accesstoken = "ya29.a0ARrdaM_FWbD959WZ_CFA-ymiIquwx5ktuOIp1dGduTjn24fkeoH8RquxPaHQI5zlil-8PY40ORTggvbPoji1_4EzkO7-I7rkFzOoG7iY0gFOzTjIVi3tn0_Z2EQfsoAkT47OtK6lc8FqIgrs0ztQfXLE1M-zEg";
         let url = "http://localhost:3000/getProfile?accesstoken="+accesstoken;
+        //let url = "https://pet-shelter-api.uw.r.appspot.com/getProfile?accesstoken="+accesstoken;
+        
         const res = await axios.get(url, { withCredentials: true}, )
         //let res = await axios.get(url);
         console.log("======= response data =======");
@@ -54,8 +56,9 @@ async function testClientGetProfile()
 async function testClientLogout()
 {
     try {
-        let accesstoken = "ya29.a0ARrdaM9KQYpvWaySIGCdRQg3GO3Vf_8-I1iTiyHjMTBihNG6fwyuo0JMQDul7VqWv2hRCWYSdtUhK-DhJzIf4GBL7oIxZh_vQKoARoM9mLtcIsinAkPBPz6Ctu-Z34pkgC0cTiAJ8XJ_89V-2u2fTVQHfU6bDg";
+        let accesstoken = "ya29.a0ARrdaM_FWbD959WZ_CFA-ymiIquwx5ktuOIp1dGduTjn24fkeoH8RquxPaHQI5zlil-8PY40ORTggvbPoji1_4EzkO7-I7rkFzOoG7iY0gFOzTjIVi3tn0_Z2EQfsoAkT47OtK6lc8FqIgrs0ztQfXLE1M-zEg";
         let url = "http://localhost:3000/logout?accesstoken="+accesstoken;
+        //let url = "https://pet-shelter-api.uw.r.appspot.com/logout?accesstoken="+accesstoken;
         const res = await axios.get(url, { withCredentials: true}, )
         //let res = await axios.get(url);
         console.log("======= response data =======");

@@ -4,6 +4,7 @@ const { entity } = require('@google-cloud/datastore/build/src/entity');
 const Pet = require('../models/pet');
 const News = require('../models/news');
 const CONFIG = require('../common/config');
+const User = require('../models/user');
 
 class DataStoreManager {
 
@@ -26,6 +27,57 @@ class DataStoreManager {
             throw err;
         }
     };
+
+
+    async getPetsBySearch(type, availability, breed, disposition){
+        try {
+            console.log(type);
+            console.log(availability);
+            console.log(breed);
+            console.log(disposition);
+            
+            let query = this.datastore.createQuery('pet');
+
+            if (type != undefined) {
+                console.log("Filtering by type");
+                query.filter('type', '=', type);
+            }
+            
+            if (availability != undefined) {
+                console.log("Filtering by availability");
+                query.filter('availability', "=", availability);
+            }
+
+            // if (disposition != undefined) {
+            //     console.log("Filtering by disposition");
+            //     //disposition = "[\"Good with other animals\"]";
+            //     console.log("disposition: ", disposition);
+            //     query.filter('disposition', "=", disposition);
+            // }
+
+            if (breed != undefined) {
+                console.log("Filtering by breed");
+                query.filter('breed', "=", breed);
+            }
+
+            const data = await this.datastore.runQuery(query);
+
+            console.log("filtered data: ", data);
+
+            let ret = {};
+
+            if (data != 'undefined' || data != null) {
+                const petmodel = new Pet();
+                ret = petmodel.map(data[0], this.datastore);
+            }
+
+            return ret;
+        }
+        catch (err) {
+            console.log(err);
+            throw err;
+        }
+    }
 
     async getPet(id) {
         try {
@@ -176,12 +228,45 @@ class DataStoreManager {
         }
     }
 
+    async getUsers() {
+        
+        try {
+            const query = this.datastore.createQuery('users');
+            const data = await this.datastore.runQuery(query);
+
+            const usermodel = new User();
+            let ret = usermodel.map(data[0], this.datastore);
+
+            return ret;
+        }
+        catch (err) {
+            console.log(err);
+            throw err;
+        }
+    };
+
+    async getUser(id) {
+        try {
+            const key = this.datastore.key(['users', Number(id)]);
+            const data = await this.datastore.get(key);
+            return data;
+        }
+        catch(err) {
+            console.log(err);
+            throw err;
+        }
+    }
+
     async getUserByOwnerId(owner_id) {
 
         try {
             const query = this.datastore.createQuery('users').filter('owner_id','=', owner_id);
             const data = await this.datastore.runQuery(query);
-            return data;
+
+            const usermodel = new User();
+            let ret = usermodel.map(data[0], this.datastore);
+            return ret;
+            
         }
         catch (err) {
             console.log(err);
@@ -190,35 +275,25 @@ class DataStoreManager {
 
     }
 
-    async insertUser(owner_id, user_alias, date_created) {
+    async updateUser(id, owner_id, user_alias, date_created, is_admin, email_notifications) {
         try {
-            const key = this.datastore.key('users');
+            const key = this.datastore.key(['users', Number(id)]);
+
             const data = {
                 "owner_id": owner_id,
                 "user_alias": user_alias,
-                "date_created": date_created
+                "date_created": date_created,
+                "is_admin": is_admin,
+                "email_notifications": email_notifications
             };
-            await this.datastore.save({"key":key, "data":data})
-            return key;
-        }
-        catch (err) {
-            console.log(err);
-            throw err; 
-        }
-    }
-
-    async deleteUer(id) {
-        try {
-            const key = this.datastore.key(['users', Number(id)]);
-            const data = await this.datastore.delete(key);
-            return data;
+            const ret = await this.datastore.save({"key":key, "data":data});
+            return ret;
         }
         catch (err) {
             console.log(err);
             throw err;
         }
     }
-
 
 }
 
