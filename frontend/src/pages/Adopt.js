@@ -152,6 +152,9 @@ export default function Adopt() {
             if (breed) {
                 url += `breed=${breed}`
             }
+            if (date) {
+                url += `date_created=${date}`
+            }
             
             const res = await Axios.get(url)
             // sort list by date
@@ -182,6 +185,9 @@ export default function Adopt() {
                 }
                 if (breedFilter) {
                     url += `breed=${breedFilter}`
+                }
+                if (dateFilter) {
+                    url += `date_created=${dateFilter}`
                 }
             
                 const res = await Axios.get(url)
