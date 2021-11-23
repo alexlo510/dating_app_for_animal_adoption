@@ -7,6 +7,7 @@ import AdoptionSearchBar from '../components/AdoptionSearchBar';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { useUserContext } from '../components/UserContext.js';
+import { elementAcceptingRef } from '@mui/utils';
 
 const sampleData = [{
     "id" : 1,
@@ -159,6 +160,19 @@ export default function Adopt() {
             const res = await Axios.get(url)
             // sort list by date
             res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
+
+            // filter by disposition if set
+            if (disposition) {
+                res.data = res.data.filter(animal => {
+                    for (let i=0; i < disposition.length; i++){
+                        if (!animal.disposition.includes(disposition[i])){
+                            return false
+                        } 
+                    }
+                    return true
+                })
+            }
+
             setData(res.data)
             setAnimal(res.data[res.data.length - 1]) // set to the latest animal
             setIndex(res.data.length - 1) // set the index of the animal
@@ -193,6 +207,18 @@ export default function Adopt() {
                 const res = await Axios.get(url)
                 // sort list by date
                 res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
+
+                // filter by disposition if set
+                if (dispositionFilter) {
+                    res.data = res.data.filter(animal => {
+                        for (let i=0; i < dispositionFilter.length; i++){
+                            if (!animal.disposition.includes(dispositionFilter[i])){
+                                return false
+                            } 
+                        }
+                        return true
+                    })
+                }
                 
                 setData(res.data)
 
