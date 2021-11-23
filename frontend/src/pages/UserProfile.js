@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Axios from "axios"
 import { Checkbox, Container, FormGroup, FormControlLabel, Typography } from '@mui/material/';
 import { useUserContext } from '../components/UserContext.js';
-import SelectInput from '@mui/material/Select/SelectInput';
 
 const titleStyle = {
     textDecoration: 'underline',
@@ -20,8 +19,17 @@ export default function UserProfile() {
     const [ disableCheckbox, setDisableCheckbox ] = useState(false)
     
     useEffect(() => {
-
-    }, []);
+        try {
+            async function fetchAdoptedAnimals() {
+                let url = `https://pet-shelter-api.uw.r.appspot.com/pets/filter?adoptedby=${user.owner_id}`
+                const res = await Axios.get(url)
+                setAdoptedAnimals(res.date)
+            }
+            fetchAdoptedAnimals();
+        } catch (err) {
+            console.log(err);
+        }
+    }, [user]);
 
     const handleEmailPreferenceChange = async (event) => {
         setDisableCheckbox(prevState => !prevState)
@@ -54,7 +62,9 @@ export default function UserProfile() {
             <Container sx={contentStyle}>
                 <Typography variant="h6" sx={titleStyle} component="div">Adopted Animals:</Typography>
                 {!adoptedAnimals && <Typography variant="body2" component="div">None</Typography>}
-                {adoptedAnimals && <Typography variant="body2" component="div">{adoptedAnimals || ""}</Typography>}
+                {adoptedAnimals && adoptedAnimals.map((animal) => ( 
+                    <Typography variant="body2" component="div">{animal.name || ""}{animal.availability || ""}</Typography>
+                ))}
             </Container>
             <Container sx={contentStyle}>
                 <Typography variant="h6" sx={titleStyle} component="div">Email Preference</Typography>
