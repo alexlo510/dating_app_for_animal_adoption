@@ -29,12 +29,14 @@ class DataStoreManager {
     };
 
 
-    async getPetsBySearch(type, availability, breed, disposition){
+    async getPetsBySearch(type, availability, breed, disposition, adoptedby, date_created){
         try {
-            console.log(type);
-            console.log(availability);
-            console.log(breed);
-            console.log(disposition);
+            console.log("type:", type);
+            console.log("availability:", availability);
+            console.log("breed:", breed);
+            console.log("disposition:", disposition);
+            console.log("adoptedby:", adoptedby);
+            console.log("date_created:", date_created);
             
             let query = this.datastore.createQuery('pet');
 
@@ -47,6 +49,20 @@ class DataStoreManager {
                 console.log("Filtering by availability");
                 query.filter('availability', "=", availability);
             }
+            
+            if (adoptedby != undefined) {
+                console.log("Filtering by adoptedby");
+                query.filter('adoptedby', "=", adoptedby);
+            }
+
+            if (breed != undefined) {
+                console.log("Filtering by breed");
+                query.filter('breed', "=", breed);
+            }
+            if (date_created != undefined) {
+                console.log("Filtering by date_created");
+                query.filter('date_created',"=", date_created);
+            }
 
             // if (disposition != undefined) {
             //     console.log("Filtering by disposition");
@@ -54,11 +70,6 @@ class DataStoreManager {
             //     console.log("disposition: ", disposition);
             //     query.filter('disposition', "=", disposition);
             // }
-
-            if (breed != undefined) {
-                console.log("Filtering by breed");
-                query.filter('breed', "=", breed);
-            }
 
             const data = await this.datastore.runQuery(query);
 
@@ -292,6 +303,25 @@ class DataStoreManager {
         catch (err) {
             console.log(err);
             throw err;
+        }
+    }
+
+    async insertUser(owner_id, user_alias, date_created, is_admin, email_notifications) {
+        try {
+            const key = this.datastore.key('users');
+            const data = {
+                "owner_id": owner_id,
+                "user_alias": user_alias, 
+                "date_created": date_created,
+                "is_admin": is_admin,
+                "email_notifications": email_notifications
+            };
+            await this.datastore.save({"key":key, "data":data})
+            return key;
+        }
+        catch (err) {
+            console.log(err);
+            throw err; 
         }
     }
 

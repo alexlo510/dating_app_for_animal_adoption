@@ -4,16 +4,6 @@ const validator = require('express-joi-validation').createValidator({
 });
 
 const ERROR = require('./route_errors');
-const CONFIG = require('../common/config');
-
-const {OAuth2Client} = require('google-auth-library');
-const oauth2client = new OAuth2Client(CONFIG.client_id);
-
-const processFile = require("../middleware/upload");
-const { format } = require("util");
-const { Storage } = require("@google-cloud/storage");
-const storage = new Storage();
-const bucket = storage.bucket('pet-shelter-api-images');
 
 const express = require('express');
 const router = express.Router();
@@ -23,28 +13,8 @@ const Pet = require('../models/pet');
 
 const dsm = new DataStoreManager();
 
+const auth = require('../common/auth.js');
 
-async function verifyToken(token) {
-    
-    let payload;
-
-    try {
-        const ticket = await oauth2client.verifyIdToken({
-            idToken: token,
-            audience: CONFIG.client_id
-        });
-        console.log(ticket);
-        payload = ticket.getPayload();
-        return payload;
-    }
-    catch (error) {
-        console.log("=====TOKEN VERIFY ERROR=====")
-        console.log(error);
-    }
-    finally {
-        return payload;
-    }
-}
 
 // Set / to only accept GET and POST
 router.delete('/', (req, res) => {
@@ -110,18 +80,23 @@ router.get('/filter', async (req, res) => {
         let availability = req.query.availability;
         let breed = req.query.breed;
         let disposition = req.query.disposition;
+        let adoptedby = req.query.adoptedby;
+        let date_created = req.query.date_created;
 
         console.log("Search type: ", type);
         console.log("Search breed: ", breed);
         console.log("Search availability: ", availability);
         console.log("Search disposition: ", disposition);
+        console.log("Search adoptedby: ", adoptedby);
+        console.log("Search date_created: ", date_created);
 
-        let resdata = await dsm.getPetsBySearch(type, availability, breed, disposition); 
+        let resdata = await dsm.getPetsBySearch(type, availability, breed, disposition, adoptedby, date_created); 
         console.log(resdata);
 
-        // if there are no pets, return error
+        // if there are no pets, return empty array
         if (resdata.length == 0 || resdata == null || resdata =='undefined') {
-            res.status(404).json(ERROR.nopetexistserror);
+            let resdata = [];
+            res.status(200).json(resdata);
             return;
         }
 
@@ -139,6 +114,7 @@ router.get('/filter', async (req, res) => {
 router.get('/:pet_id', async (req, res) => {
     
     console.log("=====Request Getting Pet by id=====");
+
     console.log("pet_id: "+ req.params.pet_id);
 
     try {
@@ -188,7 +164,14 @@ router.post('/', async (req, res) => {
 
     console.log("=====Request Inserting a Pet=====");
 
-    await processFile(req, res);
+    let test = auth.verifyToken(req);
+    
+    if (!test) {
+        console.log("Unauthorized request.....Rejecting request!!!");
+        return res.status(401).json(ERROR.unauthorizederror); 
+    }
+
+    //await processFile(req, res);
 
     console.log("availability:" + req.body.availability);
     console.log("breed:" + req.body.breed);
@@ -212,7 +195,6 @@ router.post('/', async (req, res) => {
         }
 
         // insert if all conditions are met
-        //let picture_url = "https://upload.wikimedia.org/wikipedia/commons/7/79/Trillium_Poncho_cat_dog.jpg";
         const date_created = new Date().toISOString().replace('T',' ').substr(0, 10);
 
         const key = await dsm.insertPet(req.body.availability, req.body.breed, date_created, req.body.description, req.body.disposition, req.body.name, req.body.picture_url, req.body.type);
@@ -249,7 +231,14 @@ router.post('/', async (req, res) => {
 router.patch('/:pet_id', async (req, res) => {
     
     console.log("=====Request Updating a Pet using PATCH =====");
-    const bearerHeader = req.headers['authorization']
+
+    let test = auth.verifyToken(req);
+    
+    if (!test) {
+        console.log("Unauthorized request.....Rejecting request!!!");
+        return res.status(401).json(ERROR.unauthorizederror); 
+    }
+
     console.log("pet_id: "+ req.params.pet_id);
     console.log("availability:" + req.body.availability);
     console.log("breed:" + req.body.breed);
@@ -259,9 +248,7 @@ router.patch('/:pet_id', async (req, res) => {
     console.log("picture_url:" + req.body.picture_url);
     console.log("type:" + req.body.type);
     console.log("adoptedby:" + req.body.adoptedby);
-    console.log("bearer Token:" + bearerHeader);
-    
-    
+     
     try {
         // if accept is not json, reject, server cannot respond non-json results
         if (!req.accepts(['application/json'])){
@@ -374,6 +361,14 @@ router.patch('/:pet_id', async (req, res) => {
 router.delete('/:pet_id', async (req, res) => {
     
     console.log("=====Request Deleteing a Pet=====");
+
+    let test = auth.verifyToken(req);
+    
+    if (!test) {
+        console.log("Unauthorized request.....Rejecting request!!!");
+        return res.status(401).json(ERROR.unauthorizederror); 
+    }
+
     console.log("pet_id: "+ req.params.pet_id);
     
     try {
@@ -399,9 +394,6 @@ router.delete('/:pet_id', async (req, res) => {
         console.log(error);
     }
 });
-
-
-
 
 
 module.exports = router;

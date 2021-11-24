@@ -4,7 +4,6 @@ const validator = require('express-joi-validation').createValidator({
 });
 
 const ERROR = require('./route_errors');
-const CONFIG = require('../common/config');
 
 const express = require('express');
 const router = express.Router();
@@ -12,6 +11,8 @@ const router = express.Router();
 const DataStoreManager = require('../datastore/datastoremanager');
 const News = require('../models/news');
 const dsm = new DataStoreManager();
+
+const auth = require('../common/auth.js');
 
 
 // ====== NEWS HANDLERS =======
@@ -50,6 +51,7 @@ router.get('/', async (req, res) => {
 router.get('/:news_id', async (req, res) => {
     
     console.log("=====Request Getting News by id=====");
+
     console.log("news_id: "+ req.params.news_id);
 
     try {
@@ -92,6 +94,13 @@ router.get('/:news_id', async (req, res) => {
 router.post('/', async (req, res) => {
 
     console.log("=====Request Inserting a News=====");
+
+    let test = auth.verifyToken(req);
+    
+    if (!test) {
+        console.log("Unauthorized request.....Rejecting request!!!");
+        return res.status(401).json(ERROR.unauthorizederror); 
+    }
 
     console.log("title:" + req.body.title);
     console.log("content:" + req.body.content);
@@ -144,6 +153,13 @@ router.post('/', async (req, res) => {
 router.patch('/:news_id', async (req, res) => {
     
     console.log("=====Request Updating a News Item using PATCH =====");
+
+    let test = auth.verifyToken(req);
+    
+    if (!test) {
+        console.log("Unauthorized request.....Rejecting request!!!");
+        return res.status(401).json(ERROR.unauthorizederror); 
+    }
     
     console.log("news_id: "+ req.params.news_id);
     console.log("title:" + req.body.title);
@@ -226,6 +242,14 @@ router.patch('/:news_id', async (req, res) => {
 router.delete('/:news_id', async (req, res) => {
     
     console.log("=====Request Deleteing a News Item=====");
+
+    let test = auth.verifyToken(req);
+    
+    if (!test) {
+        console.log("Unauthorized request.....Rejecting request!!!");
+        return res.status(401).json(ERROR.unauthorizederror); 
+    }
+
     console.log("news_id: "+ req.params.news_id);
     
     try {

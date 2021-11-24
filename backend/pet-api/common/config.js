@@ -22,6 +22,7 @@ const userbaseurl = baseurl+"/users"
 module.exports = {
     petbaseurl,
     newsbaseurl,
+    userbaseurl,
     oauth_client_id,
     oauth_client_secret,
     view_home_url,

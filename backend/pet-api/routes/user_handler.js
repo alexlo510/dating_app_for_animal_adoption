@@ -2,17 +2,13 @@ const Joi = require('joi')
 const validator = require('express-joi-validation').createValidator({
     passError: true
 });
-
 const ERROR = require('./route_errors');
-const CONFIG = require('../common/config');
-
 const express = require('express');
 const router = express.Router();
-
 const DataStoreManager = require('../datastore/datastoremanager');
-const News = require('../models/user');
 const User = require('../models/user');
 const dsm = new DataStoreManager();
+const auth = require('../common/auth.js');
 
 
 // ====== USER HANDLERS =======
@@ -21,6 +17,13 @@ const dsm = new DataStoreManager();
 router.get('/', async (req, res) => {
 
     console.log("=====Request Getting List of Users=====");
+
+    let test = auth.verifyToken(req);
+    
+    if (!test) {
+        console.log("Unauthorized request.....Rejecting request!!!");
+        return res.status(401).json(ERROR.unauthorizederror); 
+    }
 
     try {
         // if accept is not json, reject, server cannot respond non-json results
@@ -51,6 +54,14 @@ router.get('/', async (req, res) => {
 router.get('/:user_id', async (req, res) => {
     
     console.log("=====Request Getting User by id=====");
+
+    let test = auth.verifyToken(req);
+    
+    if (!test) {
+        console.log("Unauthorized request.....Rejecting request!!!");
+        return res.status(401).json(ERROR.unauthorizederror); 
+    }
+
     console.log("user_id: "+ req.params.user_id);
 
     try {
@@ -94,6 +105,13 @@ router.get('/:user_id', async (req, res) => {
 router.patch('/:user_id/settings', async (req, res) => {
     
     console.log("=====Request Updating a User using PATCH =====");
+
+    let test = auth.verifyToken(req);
+    
+    if (!test) {
+        console.log("Unauthorized request.....Rejecting request!!!");
+        return res.status(401).json(ERROR.unauthorizederror); 
+    }
     
     console.log("id: "+ req.params.user_id);
     console.log("owner_id: "+ req.body.owner_id);
