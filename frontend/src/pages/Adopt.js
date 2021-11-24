@@ -152,13 +152,13 @@ export default function Adopt() {
             let url = "https://pet-shelter-api.uw.r.appspot.com/pets/filter?"
 
             if (type) {
-                url += `type=${type}`
+                url += `&type=${type}`
             }
             if (breed) {
-                url += `breed=${breed}`
+                url += `&breed=${breed}`
             }
             if (date) {
-                url += `date_created=${date}`
+                url += `&date_created=${date}`
             }
             
             const res = await Axios.get(url)
@@ -192,20 +192,19 @@ export default function Adopt() {
 
     // might not need this if insert the searchFilter prop in handleClick instead. 
     async function handleFilterClick(fetchID) {
-        console.log("filter click"); // remove later
         setDisableButtons(prevState => !prevState) // disable buttons        
         try {
             async function fetchFilterNewAnimal(fetchID) {
                 let url = "https://pet-shelter-api.uw.r.appspot.com/pets/filter?"
 
                 if (typeFilter) {
-                    url += `type=${typeFilter}`
+                    url += `&type=${typeFilter}`
                 }
                 if (breedFilter) {
-                    url += `breed=${breedFilter}`
+                    url += `&breed=${breedFilter}`
                 }
                 if (dateFilter) {
-                    url += `date_created=${dateFilter}`
+                    url += `&date_created=${dateFilter}`
                 }
             
                 const res = await Axios.get(url)
