@@ -20,8 +20,6 @@ const buttonStyle = {
 export default function AdoptionCard(props) {
     const{ name, description, type, breed, disposition, availability, id, picture_url, handleAdoptClick} = props
     const { user } = useUserContext();
-
-    console.log(disposition); // remove later
   
     return (
         <Card sx={{}}>
