@@ -70,7 +70,8 @@ passport.use(new GoogleStrategy({
     users_dict[accessToken] = user;
 
     const test = await dsm.getUserByOwnerId(owner_id);
-    console.log("test: ", test)
+    console.log("tes if user exists: ", test);
+
     // if user doesn't exist, insert, by default is_admin is false, email_notifications is true 
     if (test == undefined || test.length == 0) {
         console.log("====insert into DB====");
@@ -92,7 +93,8 @@ passport.serializeUser((user, done) => {
     console.log("owner_id: " + user.owner_id);
     console.log("user_alias: " + user.user_alias);
     console.log("accesstoken: ", user.accesstoken); 
-    console.log("is_admin: ", user.is_admin); 
+    console.log("is_admin: ", user.is_admin);
+    console.log("email_notifications: ", user.email_notifications); 
     return done(null, user);
 })
 
@@ -101,7 +103,8 @@ passport.deserializeUser((user, done) => {
     console.log("owner_id: " + user.owner_id);
     console.log("user_alias: " + user.user_alias);
     console.log("accesstoken: ", user.accesstoken);
-    console.log("is_admin: ", user.is_admin); 
+    console.log("is_admin: ", user.is_admin);
+    console.log("email_notifications: ", user.email_notifications);
     return done(null, user);
 })
 
@@ -249,7 +252,6 @@ app.set('auth_check', auth_check);
 // Listen to the App Engine-specified port, or 8000 otherwise
 const port = process.env.PORT || 3000;
 app.listen(port, async () => {
-
     (
         async function () {
             let ip = await publicip.v4();

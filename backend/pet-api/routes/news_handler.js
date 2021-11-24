@@ -30,6 +30,7 @@ router.get('/', async (req, res) => {
         }
 
         let resdata = await dsm.getNewsList();
+        console.log(resdata);
 
         // if there are no news, return error
         if (resdata.length == 0 || resdata == null || resdata =='undefined') {
@@ -63,12 +64,14 @@ router.get('/:news_id', async (req, res) => {
         }
 
         let data = await dsm.getNews(req.params.news_id);            
-        
+        console.log(data);
+
         // if doesn't exist, return error
         if (data[0] == 'undefined' || data[0] == null) {
             res.status(404).json(ERROR.nonewsexistserror);
             return;
         }
+        
         let newsmodel = new News(req.params.news_id, data[0].title, data[0].content, data[0].date_created, data[0].news_url)
   
         resdata = {

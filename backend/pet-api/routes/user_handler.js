@@ -33,6 +33,7 @@ router.get('/', async (req, res) => {
         }
 
         let resdata = await dsm.getUsers();
+        console.log(resdata); 
 
         // if there are no users, return error
         if (resdata.length == 0 || resdata == null || resdata =='undefined') {
@@ -72,7 +73,8 @@ router.get('/:user_id', async (req, res) => {
             return;
         }
 
-        let data = await dsm.getUser(req.params.user_id);            
+        let data = await dsm.getUser(req.params.user_id);
+        console.log(data);          
         
         // if doesn't exist, return error
         if (data[0] == 'undefined' || data[0] == null) {

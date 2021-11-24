@@ -125,7 +125,8 @@ router.get('/:pet_id', async (req, res) => {
             return;
         }
 
-        let data = await dsm.getPet(req.params.pet_id);            
+        let data = await dsm.getPet(req.params.pet_id);
+        console.log(data);            
         
         // if doesn't exist, return error
         if (data[0] == 'undefined' || data[0] == null) {
