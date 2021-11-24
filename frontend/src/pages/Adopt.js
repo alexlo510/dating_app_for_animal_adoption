@@ -7,7 +7,6 @@ import AdoptionSearchBar from '../components/AdoptionSearchBar';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { useUserContext } from '../components/UserContext.js';
-import { elementAcceptingRef } from '@mui/utils';
 
 const sampleData = [{
     "id" : 1,
@@ -138,6 +137,11 @@ export default function Adopt() {
             
         } catch (err) {
             setAdoptFail(true);
+            if (err.response.status === 401) {
+                sessionStorage.clear()
+                //localStorage.clear()
+                window.location.href = '/login';
+            }
         }
     }
 
@@ -148,13 +152,13 @@ export default function Adopt() {
             let url = "https://pet-shelter-api.uw.r.appspot.com/pets/filter?"
 
             if (type) {
-                url += `type=${type}`
+                url += `&type=${type}`
             }
             if (breed) {
-                url += `breed=${breed}`
+                url += `&breed=${breed}`
             }
             if (date) {
-                url += `date_created=${date}`
+                url += `&date_created=${date}`
             }
             
             const res = await Axios.get(url)
@@ -188,20 +192,19 @@ export default function Adopt() {
 
     // might not need this if insert the searchFilter prop in handleClick instead. 
     async function handleFilterClick(fetchID) {
-        console.log("filter click"); // remove later
         setDisableButtons(prevState => !prevState) // disable buttons        
         try {
             async function fetchFilterNewAnimal(fetchID) {
                 let url = "https://pet-shelter-api.uw.r.appspot.com/pets/filter?"
 
                 if (typeFilter) {
-                    url += `type=${typeFilter}`
+                    url += `&type=${typeFilter}`
                 }
                 if (breedFilter) {
-                    url += `breed=${breedFilter}`
+                    url += `&breed=${breedFilter}`
                 }
                 if (dateFilter) {
-                    url += `date_created=${dateFilter}`
+                    url += `&date_created=${dateFilter}`
                 }
             
                 const res = await Axios.get(url)
@@ -250,7 +253,8 @@ export default function Adopt() {
                 {searchFilter && <Button color="primary" variant="contained" onClick={() => window.location.reload()}>Clear Filters</Button>}
                 <Grid container justifyContent="space-around" sx={{marginTop: 2}}>
                     <Grid item>
-                        {!animal && <div style={{display: 'flex', justifyContent: 'center'}}><CircularProgress/></div>}
+                        {(!animal && searchFilter === false) && <div style={{display: 'flex', justifyContent: 'center'}}><CircularProgress/></div>}
+                        {(!animal && searchFilter === true) && <div style={{display: 'flex', justifyContent: 'center'}}>No Result</div>}
                         {animal && <AdoptionCard {...animal} handleAdoptClick={handleAdoptClick}/>}
                     </Grid>
                 </Grid>
