@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Axios from "axios"
-import { Checkbox, Container, FormGroup, FormControlLabel, Typography } from '@mui/material/';
+import { Checkbox, Container, FormGroup, FormControlLabel, Grid, Typography } from '@mui/material/';
 import { useUserContext } from '../components/UserContext.js';
 
 const titleStyle = {
@@ -21,15 +21,15 @@ export default function UserProfile() {
     useEffect(() => {
         try {
             async function fetchAdoptedAnimals() {
-                let url = `https://pet-shelter-api.uw.r.appspot.com/pets/filter?adoptedby=${user.owner_id}`
-                const res = await Axios.get(url)
-                setAdoptedAnimals(res.date)
+                const res = await Axios.get(`https://pet-shelter-api.uw.r.appspot.com/pets/filter?adoptedby=${user ? user.owner_id : JSON.parse(sessionStorage.getItem('user')).email_notifications}`)
+                console.log(res.data);
+                setAdoptedAnimals(res.data)
             }
             fetchAdoptedAnimals();
         } catch (err) {
             console.log(err);
         }
-    }, [user]);
+    }, []);
 
     const handleEmailPreferenceChange = async (event) => {
         setDisableCheckbox(prevState => !prevState)
@@ -48,6 +48,11 @@ export default function UserProfile() {
         } catch (err) {
             console.log(err);
             setDisableCheckbox(prevState => !prevState)
+            if (err.response.status === 401) {
+                sessionStorage.clear()
+                //localStorage.clear()
+                window.location.href = '/login';
+            }
         }
         setDisableCheckbox(prevState => !prevState)
     };
@@ -62,8 +67,25 @@ export default function UserProfile() {
             <Container sx={contentStyle}>
                 <Typography variant="h6" sx={titleStyle} component="div">Adopted Animals:</Typography>
                 {!adoptedAnimals && <Typography variant="body2" component="div">None</Typography>}
-                {adoptedAnimals && adoptedAnimals.map((animal) => ( 
-                    <Typography variant="body2" component="div">{animal.name || ""}{animal.availability || ""}</Typography>
+                {adoptedAnimals && 
+                    <Grid container>
+                        <Grid item xs={6}>
+                            <Typography display="inline" variant="body1" sx={{textDecoration: 'underline'}}>Animal Name</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Typography display="inline" variant="body1" sx={{textDecoration: 'underline'}}>Adoption Status</Typography>
+                        </Grid>
+                    </Grid>
+                }
+                {adoptedAnimals && adoptedAnimals.map((animal) => (
+                    <Grid container>
+                        <Grid item xs={6}>
+                            <Typography display="inline" variant="body2">{animal.name || ""}</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Typography display="inline" variant="body2">{animal.availability || ""}</Typography>
+                        </Grid>
+                    </Grid>
                 ))}
             </Container>
             <Container sx={contentStyle}>
