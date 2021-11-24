@@ -1,16 +1,13 @@
 const ERROR = require('./route_errors');
-const CONFIG = require('../common/config');
-
 const { v4: uuidv4 } = require('uuid');
-
 const express = require('express');
 const router = express.Router();
-
 const processFile = require("../middleware/upload");
 const { format } = require("util");
 const { Storage } = require("@google-cloud/storage");
 const storage = new Storage();
 const bucket = storage.bucket('pet-shelter-api-images');
+const auth = require('../common/auth.js');
 
 // ====== FILE UPLOAD =======
 
@@ -23,6 +20,13 @@ router.use(express.urlencoded({
 // upload a file
 router.post('/', async (req, res) => {
     console.log("=====Request Uploading an Image=====");
+
+    let test = auth.verifyToken(req);
+    
+    if (!test) {
+        console.log("Unauthorized request.....Rejecting request!!!");
+        return res.status(401).json(ERROR.unauthorizederror); 
+    }
 
     try {
         await processFile(req, res);
@@ -66,4 +70,4 @@ router.post('/', async (req, res) => {
       }
 });
 
-module.exports = router;ß
+module.exports = router;
