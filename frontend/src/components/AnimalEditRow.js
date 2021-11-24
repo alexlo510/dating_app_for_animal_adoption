@@ -141,7 +141,7 @@ const EditableRow = ({
                 <input
                     //required
                     type="text"
-                    placeholder="Enter a description..."
+                    placeholder="Adopted by..."
                     name="adoptedby"
                     value={formData.adoptedby}
                     onChange={handleChange}

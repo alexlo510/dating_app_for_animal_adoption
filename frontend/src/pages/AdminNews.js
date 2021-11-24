@@ -9,6 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TablePagination from '@mui/material/TablePagination';
+import TextField from '@mui/material/TextField'
 import Paper from '@mui/material/Paper';
 import { nanoid } from "nanoid";
 import NewsReadRow from '../components/NewsReadRow';
@@ -35,9 +36,6 @@ export default function Admin() {
         file: "",
     });
     const { user } = useUserContext();
-    const config = {
-        headers: { Authorization: `Bearer ${user.accesstoken}` }
-    };
 
     useEffect(() => {
         try {
@@ -67,6 +65,7 @@ export default function Admin() {
 
     const handleEditFormChange = (event) => {
         event.preventDefault();
+
         let fieldValue = "";
         const fieldName = event.target.getAttribute("name");
         if (fieldName === "file") {
@@ -83,6 +82,10 @@ export default function Admin() {
     async function handleAddFormSubmit(event) {
         event.preventDefault();
 
+        const config = {
+            headers: { Authorization: `Bearer ${user.accesstoken}` }
+        };
+
         // 1st call for uploading image and getting img_url
         if (addFormData.file) {
             try {
@@ -94,6 +97,7 @@ export default function Admin() {
                 console.log(url);
                 addFormData.news_url = url;
             } catch (err) {
+                errorCatch();
                 console.log("Failed to POST: ", err);
             }
         }
@@ -111,17 +115,23 @@ export default function Admin() {
             const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/news/`, payload, config)
             console.log(res);
         } catch (err) {
+            errorCatch();
             console.log("Failed to POST: ", err);
         }
         try {
             fetchArticles();
         } catch (err) {
+            errorCatch();
             console.log(err);
         }
     };
 
     async function handleEditFormSubmit(event) {
         event.preventDefault();
+
+        const config = {
+            headers: { Authorization: `Bearer ${user.accesstoken}` }
+        };
 
         // 1st call for uploading image and getting img_url
         if (editFormData.file) {
@@ -134,6 +144,7 @@ export default function Admin() {
                 console.log(url);
                 editFormData.news_url = url;
             } catch (err) {
+                errorCatch();
                 console.log("Failed to upload img: ", err);
             }
         }
@@ -158,6 +169,7 @@ export default function Admin() {
             setEditArticleId(null);
 
         } catch (err) {
+            errorCatch();
             console.log("Failed to PATCH: ", err);
         }
     };
@@ -181,19 +193,22 @@ export default function Admin() {
     };
 
     async function handleDeleteClick(articleId) {
-        console.log("Deleting", articleId); // remove after testing
+        const config = {
+            headers: { Authorization: `Bearer ${user.accesstoken}` }
+        };
 
         const newArticles = [...articles];
         const index = articles.findIndex((article) => article.id === articleId);
 
         try {
-            const res = await Axios.delete(`https://pet-shelter-api.uw.r.appspot.com/news/${articleId}`)
+            const res = await Axios.delete(`https://pet-shelter-api.uw.r.appspot.com/news/${articleId}`, config)
             console.log(res);
 
             newArticles.splice(index, 1);
             setArticles(newArticles);
 
         } catch (err) {
+            errorCatch();
             console.log("Failed to DELETE: ", err);
         }
     }
@@ -210,6 +225,15 @@ export default function Admin() {
 
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - articles.length) : 0;
+
+    function errorCatch(err){
+        if (err.response.status === 401) {
+            sessionStorage.clear()
+            //localStorage.clear()
+            window.location.href = '/login';
+
+        }
+    }
 
     return (
         <>
@@ -268,20 +292,22 @@ export default function Admin() {
                 <br />
                 <h2>Add an Article</h2>
                 <form onSubmit={handleAddFormSubmit}>
-                    <input
+                    <TextField
                         required
                         type="text"
                         name="title"
                         placeholder="Enter a title..."
                         onChange={handleAddFormChange}
                     />
-                    <input
+                    <br />
+                    <TextField
                         required
                         type="text"
                         name="content"
                         placeholder="Enter content..."
                         onChange={handleAddFormChange}
                     />
+                    <br />
                     <input
                         //required
                         type="file"
@@ -292,6 +318,7 @@ export default function Admin() {
                             setAddFormData({ ...addFormData, file: file })
                         }}
                     />
+                    <br />
                     <Button type="submit" color="primary" variant="contained">Add</Button>
                 </form>
             </Container>

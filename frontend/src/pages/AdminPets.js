@@ -42,9 +42,6 @@ export default function AdminPets() {
         adoptedby: "",
     });
     const { user } = useUserContext();
-    const config = {
-        headers: { Authorization: `Bearer ${user.accesstoken}` }
-    };
 
     useEffect(() => {
         try {
@@ -73,7 +70,7 @@ export default function AdminPets() {
         setAnimals(res.data)
     }
 
-    const handleAddFormChange = event => {
+    const handleAddFormChange = (event) => {
         event.preventDefault();
 
         const { value, name } = event.target;
@@ -84,221 +81,259 @@ export default function AdminPets() {
         console.log(newFormData); // remove after testing
     };
 
-    const handleEditFormChange = (event) => {
-        event.preventDefault();
+        const handleEditFormChange = (event) => {
+            event.preventDefault();
 
-        const { value, name } = event.target;
-        const newFormData = { ...editFormData };
-        newFormData[name] = value;
+            let fieldValue = "";
+            const fieldName = event.target.getAttribute("name");
+            if (fieldName === "file") {
+                fieldValue = event.target.files[0]
+            } else {
+                fieldValue = event.target.value;
+            }
+            const newFormData = { ...editFormData };
+            newFormData[fieldName] = fieldValue;
 
-        setEditFormData(newFormData);
-        console.log(newFormData); // remove after testing
-    };
-
-    async function handleAddFormSubmit(event) {
-        event.preventDefault();
-
-        // 1st call for uploading image and getting img_url
-        try {
-            const payload = addFormData.file;
-            const url = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/pets/`, payload, config)
-            console.log(url);
-            addFormData.url = url;
-
-        } catch (err) {
-            console.log("Failed to upload img: ", err);
-        }
-
-        const newAnimal = {
-            availability: addFormData.availability,
-            breed: addFormData.breed,
-            description: addFormData.description,
-            disposition: addFormData.disposition,
-            name: addFormData.name,
-            type: addFormData.type,
-            file: addFormData.file,
+            setEditFormData(newFormData);
         };
 
-        // 2nd call for editting the data
-        try {
-            console.log("POST: ", newAnimal); // remove after testing
-            const payload = newAnimal
-            const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/pets/`, payload, config)
-            console.log(res);
+        async function handleAddFormSubmit(event) {
+            event.preventDefault();
 
-        } catch (err) {
-            console.log("Failed to POST: ", err);
-        }
-        try {
-            fetchAnimal();
-        } catch (err) {
-            console.log(err);
-        }
-    };
+            const config = {
+                headers: { Authorization: `Bearer ${user.accesstoken}` }
+            };
 
-    async function handleEditFormSubmit(event) {
-        event.preventDefault();
+            // 1st call for uploading image and getting img_url
+            if (addFormData.file) {
+                try {
+                    const payload = new FormData()
+                    // append additional data here if needed
+                    payload.append("file", addFormData.file);
+                    const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/upload`, payload, config)
+                    const url = res.data.image_url
+                    console.log(url);
+                    addFormData.picture_url = url;
+                } catch (err) {
+                    errorCatch(err);
+                    console.log("Failed to POST: ", err);
+                }
+            }
 
-        // 1st call for uploading image and getting img_url
-        try {
-            const payload = editFormData.file;
-            const url = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/upload`, payload, config)
-            console.log(url);
-            editFormData.picture_url = url;
-        } catch (err) {
-            console.log("Failed to upload image: ", err);
-        }
+            const newAnimal = {
+                availability: addFormData.availability,
+                breed: addFormData.breed,
+                description: addFormData.description,
+                disposition: addFormData.disposition,
+                name: addFormData.name,
+                type: addFormData.type,
+                file: addFormData.file,
+                picture_url: addFormData.picture_url,
+            };
 
-        const editedAnimal = {
-            id: editAnimalId,
-            availability: editFormData.availability,
-            breed: editFormData.breed,
-            description: editFormData.description,
-            disposition: editFormData.disposition,
-            name: editFormData.name,
-            type: editFormData.type,
-            picture_url: editFormData.picture_url,
-            adoptedby: editFormData.adoptedby,
+            // 2nd call for editting the data
+            try {
+                console.log("POST: ", newAnimal); // remove after testing
+                const payload = newAnimal
+                const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/pets/`, payload, config)
+                console.log(res);
+
+            } catch (err) {
+                errorCatch(err);
+                console.log("Failed to POST: ", err);
+            }
+            try {
+                fetchAnimal();
+            } catch (err) {
+                console.log(err);
+            }
         };
 
-        const newAnimals = [...animals];
-        const index = animals.findIndex((animal) => animal.id === editAnimalId);
+        async function handleEditFormSubmit(event) {
+            event.preventDefault();
 
-        // 2nd call for editting the data
-        try {
-            console.log("Index: ", index); // remove after testing
-            console.log("PATCH: ", editAnimalId); // remove after testing
-            const payload = editedAnimal
-            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${editAnimalId}`, payload, config)
-            console.log(res);
+            const config = {
+                headers: { Authorization: `Bearer ${user.accesstoken}` }
+            };
 
-            newAnimals[index] = editedAnimal;
-            setAnimals(newAnimals);
+            // 1st call for uploading image and getting img_url
+            if (editFormData.file) {
+                try {
+                    const payload = new FormData()
+                    // append additional data here if needed
+                    payload.append("file", editFormData.file);
+                    const res = await Axios.post(`https://pet-shelter-api.uw.r.appspot.com/upload`, payload, config)
+                    const url = res.data.image_url
+                    console.log(url);
+                    editFormData.picture_url = url;
+                } catch (err) {
+                    errorCatch(err);
+                    console.log("Failed to upload img: ", err);
+                }
+            }
+
+            const editedAnimal = {
+                id: editAnimalId,
+                availability: editFormData.availability,
+                breed: editFormData.breed,
+                description: editFormData.description,
+                disposition: editFormData.disposition,
+                name: editFormData.name,
+                type: editFormData.type,
+                picture_url: editFormData.picture_url,
+                adoptedby: editFormData.adoptedby,
+            };
+
+            const newAnimals = [...animals];
+            const index = animals.findIndex((animal) => animal.id === editAnimalId);
+
+            // 2nd call for editting the data
+            try {
+                const payload = editedAnimal
+                const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${editAnimalId}`, payload, config)
+                console.log(res);
+
+                newAnimals[index] = editedAnimal;
+                setAnimals(newAnimals);
+                setEditAnimalId(null);
+
+            } catch (err) {
+                errorCatch(err);
+                console.log("Failed to PATCH: ", err);
+            }
+            console.log("Animals: ", animals); // remove after testing
+        };
+
+        const handleEditClick = (event, animal) => {
+            console.log("Animal: ", animal); // remove after testing
+            console.log("AnimalID: ", animal.id);
+
+            event.preventDefault();
+            setEditAnimalId(animal.id);
+            console.log("editAnimalId: ", editAnimalId); // remove after testing
+
+            const formValues = {
+                availability: animal.availability,
+                breed: animal.breed,
+                description: animal.description,
+                disposition: animal.disposition,
+                name: animal.name,
+                type: animal.type,
+                adoptedby: animal.adoptedby,
+            };
+
+            setEditFormData(formValues);
+        };
+
+        const handleCancelClick = () => {
             setEditAnimalId(null);
-
-        } catch (err) {
-            console.log("Failed to PATCH: ", err);
-        }
-        console.log("Animals: ", animals); // remove after testing
-    };
-
-    const handleEditClick = (event, animal) => {
-        console.log("Animal: ", animal); // remove after testing
-        console.log("AnimalID: ", animal.id);
-
-        event.preventDefault();
-        setEditAnimalId(animal.id);
-        console.log("editAnimalId: ", editAnimalId); // remove after testing
-
-        const formValues = {
-            availability: animal.availability,
-            breed: animal.breed,
-            description: animal.description,
-            disposition: animal.disposition,
-            name: animal.name,
-            type: animal.type,
-            adoptedby: animal.adoptedby,
+            console.log("Animals: ", animals); // remove after testing
         };
 
-        setEditFormData(formValues);
-    };
+        async function handleDeleteClick(animalId) {
+            const config = {
+                headers: { Authorization: `Bearer ${user.accesstoken}` }
+            };
 
-    const handleCancelClick = () => {
-        setEditAnimalId(null);
-        console.log("Animals: ", animals); // remove after testing
-    };
+            const newAnimals = [...animals];
+            const index = animals.findIndex((animal) => animal.id === animalId);
 
-    async function handleDeleteClick(animalId) {
+            try {
+                const res = await Axios.delete(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalId}`, config)
+                console.log(res);
 
-        const newAnimals = [...animals];
-        const index = animals.findIndex((animal) => animal.id === animalId);
+                console.log("Deleting", animalId); // remove after testing
 
-        try {
-            const res = await Axios.delete(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalId}`)
-            console.log(res);
+                newAnimals.splice(index, 1);
+                setAnimals(newAnimals);
 
-            console.log("Deleting", animalId); // remove after testing
-
-            newAnimals.splice(index, 1);
-            setAnimals(newAnimals);
-
-        } catch (err) {
-            console.log("Failed to DELETE: ", err);
+            } catch (err) {
+                errorCatch(err);
+                console.log("Failed to DELETE: ", err);
+            }
         }
-    }
 
-    function handleAddImage(event) {
-        const file = event.target.files[0]
-        setAddFormData({ ...addFormData, file: file })
-    }
+        function handleAddImage(event) {
+            const file = event.target.files[0]
+            setAddFormData({ ...addFormData, file: file })
+        }
 
-    return (
-        <>
-            <br />
-            <Container>
-                <form onSubmit={handleEditFormSubmit}>
-                    <TableContainer component={Paper}>
-                        <Table style={{ whiteSpace: 'pre-wrap' }}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Name</TableCell>
-                                    <TableCell align="left">Type</TableCell>
-                                    <TableCell align="left">Breed</TableCell>
-                                    <TableCell align="left">Discription</TableCell>
-                                    <TableCell align="left">Disposition</TableCell>
-                                    <TableCell align="left">Availability</TableCell>
-                                    <TableCell align="left">Adopted By</TableCell>
-                                    <TableCell align="right" />
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {(rowsPerPage > 0
-                                    ? animals.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    : animals
-                                ).map((animal) => (
-                                    <Fragment>
-                                        {editAnimalId === animal.id ? (
-                                            <AnimalEditRow
-                                                formData={editFormData}
-                                                handleChange={handleEditFormChange}
-                                                handleCancelClick={handleCancelClick}
-                                            />
-                                        ) : (
-                                            <AnimalReadRow
-                                                animal={animal}
-                                                handleEditClick={handleEditClick}
-                                                handleDeleteClick={handleDeleteClick}
-                                            />
-                                        )}
-                                    </Fragment>
-                                ))}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{ height: 53 * emptyRows }}>
-                                        <TableCell colSpan={6} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                        <TablePagination
-                            rowsPerPageOptions={[5, 10, 25]}
-                            component="div"
-                            count={animals.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
-                    </TableContainer>
-                </form>
+        function errorCatch(err) {
+            if (err.response.status === 401) {
+                sessionStorage.clear()
+                //localStorage.clear()
+                window.location.href = '/login';
+
+            }
+        }
+
+        return (
+            <>
                 <br />
-                <h2>Add an Animal</h2>
-                <PetForm
-                    formData={addFormData}
-                    handleImage={handleAddImage}
-                    handleChange={handleAddFormChange}
-                    handleSubmit={handleAddFormSubmit}
-                />
-            </Container>
-        </>
-    );
-}
+                <Container>
+                    <form onSubmit={handleEditFormSubmit}>
+                        <TableContainer component={Paper}>
+                            <Table style={{ whiteSpace: 'pre-wrap' }}>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Name</TableCell>
+                                        <TableCell align="left">Type</TableCell>
+                                        <TableCell align="left">Breed</TableCell>
+                                        <TableCell align="left">Discription</TableCell>
+                                        <TableCell align="left">Disposition</TableCell>
+                                        <TableCell align="left">Availability</TableCell>
+                                        <TableCell align="left">Adopted By</TableCell>
+                                        <TableCell align="right" />
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {(rowsPerPage > 0
+                                        ? animals.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        : animals
+                                    ).map((animal) => (
+                                        <Fragment>
+                                            {editAnimalId === animal.id ? (
+                                                <AnimalEditRow
+                                                    formData={editFormData}
+                                                    handleChange={handleEditFormChange}
+                                                    handleCancelClick={handleCancelClick}
+                                                />
+                                            ) : (
+                                                <AnimalReadRow
+                                                    animal={animal}
+                                                    handleEditClick={handleEditClick}
+                                                    handleDeleteClick={handleDeleteClick}
+                                                />
+                                            )}
+                                        </Fragment>
+                                    ))}
+                                    {emptyRows > 0 && (
+                                        <TableRow style={{ height: 53 * emptyRows }}>
+                                            <TableCell colSpan={6} />
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                            <TablePagination
+                                rowsPerPageOptions={[5, 10, 25]}
+                                component="div"
+                                count={animals.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                        </TableContainer>
+                    </form>
+                    <br />
+                    <h2>Add an Animal</h2>
+                    <PetForm
+                        formData={addFormData}
+                        handleImage={handleAddImage}
+                        handleChange={handleAddFormChange}
+                        handleSubmit={handleAddFormSubmit}
+                    />
+                </Container>
+            </>
+        );
+    }
