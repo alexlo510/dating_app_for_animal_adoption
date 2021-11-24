@@ -73,7 +73,7 @@ const EditableRow = ({
                         name="breed"
                         labelId="selectLabel"
                         value={formData.breed}
-                        label="Type"
+                        label="breed"
                         variant="standard"
                         onChange={handleChange}
                     >
@@ -138,6 +138,16 @@ const EditableRow = ({
                 </FormControl>
             </TableCell>
             <TableCell>
+                <input
+                    //required
+                    type="text"
+                    placeholder="Enter a description..."
+                    name="adoptedby"
+                    value={formData.adoptedby}
+                    onChange={handleChange}
+                ></input>
+            </TableCell>
+            <TableCell>
                 <label htmlFor="replace_image">
                     <input
                         style={{ display: 'none' }}
@@ -151,6 +161,7 @@ const EditableRow = ({
                     <button type="button" onClick={handleReplaceImageButtonClick}>
                         Replace Image
                     </button>
+                    {formData.file && <span>{formData.file.name}</span>}
                 </label>
             </TableCell>
             <TableCell>

@@ -39,6 +39,7 @@ export default function AdminPets() {
         type: "",
         picture_url: "",
         file: "",
+        adoptedby: "",
     });
     const { user } = useUserContext();
     const config = {
@@ -157,6 +158,7 @@ export default function AdminPets() {
             name: editFormData.name,
             type: editFormData.type,
             picture_url: editFormData.picture_url,
+            adoptedby: editFormData.adoptedby,
         };
 
         const newAnimals = [...animals];
@@ -195,6 +197,7 @@ export default function AdminPets() {
             disposition: animal.disposition,
             name: animal.name,
             type: animal.type,
+            adoptedby: animal.adoptedby,
         };
 
         setEditFormData(formValues);
