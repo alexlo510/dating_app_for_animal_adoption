@@ -9,7 +9,7 @@ export default function NewsCard(props) {
             {news_url !== "" ? <CardMedia component="img" image={news_url} sx={{objectFit: "scale-down", width:300, minHeight: 230}}/> : null}
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">{title || ""}</Typography>
-                <Typography variant="body2" color="text.secondary" component="div">Type: {date_created || ""}</Typography>
+                <Typography variant="body2" color="text.secondary" component="div">Date: {date_created || ""}</Typography>
                 <Typography variant="body2" color="text.secondary" component="div" sx={{maxWidth:300, maxHeight: 600}}>
                     {content || ""}
                 </Typography>
