@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Axios from "axios"
-import { Button, CircularProgress, Container, Grid } from '@mui/material/';
+import { Button, CircularProgress, Container, Grid, Typography } from '@mui/material/';
 import AdoptionCard from '../components/AdoptionCard';
 import AlertMessage from '../components/AlertMessage';
 import AdoptionSearchBar from '../components/AdoptionSearchBar';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { useUserContext } from '../components/UserContext.js';
 
 const sampleData = [{
     "id" : 1,
@@ -65,6 +66,12 @@ export default function Adopt() {
     const [disableButtons, setDisableButtons] = useState(false)
     const [adoptSuccess, setAdoptSuccess] = useState(false)
     const [adoptFail, setAdoptFail] = useState(false)
+    const [searchFilter, setSearchFilter] = useState(false)
+    const [typeFilter, setTypeFilter] = useState("")
+    const [breedFilter, setBreedFilter] = useState("")
+    const [dispositionFilter, setDispositionFilter] = useState([])
+    const [dateFilter, setDateFilter] = useState("")
+    const { user } = useUserContext();
     
     useEffect(() => {
         try {
@@ -116,8 +123,12 @@ export default function Adopt() {
     async function handleAdoptClick(animalID) {
         console.log("Adopting", animalID); // remove after testing
         try {
-            const payload = {availability : "Pending"}
-            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalID}`, payload)
+            const payload = {availability : "Pending", adoptedby : `${user.owner_id}`}
+            const config = {
+                headers: { Authorization: `Bearer ${user.accesstoken}` }
+            };
+            console.log("config:", config);
+            const res = await Axios.patch(`https://pet-shelter-api.uw.r.appspot.com/pets/${animalID}`, payload, config)
             console.log(res);
             setAdoptSuccess(true);
             setAnimal({...animal, "availability":"Pending"}) // switch to just set res data? 
@@ -126,27 +137,135 @@ export default function Adopt() {
             
         } catch (err) {
             setAdoptFail(true);
+            if (err.response.status === 401) {
+                sessionStorage.clear()
+                //localStorage.clear()
+                window.location.href = '/login';
+            }
+        }
+    }
+
+    async function handleSearch(type, breed, disposition, date) {
+        console.log(type, breed, disposition, date);
+        try {
+            //const payload = {type: type, breed: breed, disposition: disposition, date: date}
+            let url = "https://pet-shelter-api.uw.r.appspot.com/pets/filter?"
+
+            if (type) {
+                url += `&type=${type}`
+            }
+            if (breed) {
+                url += `&breed=${breed}`
+            }
+            if (date) {
+                url += `&date_created=${date}`
+            }
+            
+            const res = await Axios.get(url)
+            // sort list by date
+            res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
+
+            // filter by disposition if set
+            if (disposition) {
+                res.data = res.data.filter(animal => {
+                    for (let i=0; i < disposition.length; i++){
+                        if (!animal.disposition.includes(disposition[i])){
+                            return false
+                        } 
+                    }
+                    return true
+                })
+            }
+
+            setData(res.data)
+            setAnimal(res.data[res.data.length - 1]) // set to the latest animal
+            setIndex(res.data.length - 1) // set the index of the animal
+            setSearchFilter(true)
+            setTypeFilter(type)
+            setBreedFilter(breed)
+            setDispositionFilter(disposition)
+            setDateFilter(date) 
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    // might not need this if insert the searchFilter prop in handleClick instead. 
+    async function handleFilterClick(fetchID) {
+        setDisableButtons(prevState => !prevState) // disable buttons        
+        try {
+            async function fetchFilterNewAnimal(fetchID) {
+                let url = "https://pet-shelter-api.uw.r.appspot.com/pets/filter?"
+
+                if (typeFilter) {
+                    url += `&type=${typeFilter}`
+                }
+                if (breedFilter) {
+                    url += `&breed=${breedFilter}`
+                }
+                if (dateFilter) {
+                    url += `&date_created=${dateFilter}`
+                }
+            
+                const res = await Axios.get(url)
+                // sort list by date
+                res.data.sort((a, b) => (a.date_created > b.date_created) ? 1 : (a.date_created === b.date_created) ? (a.id > b.id ? 1 : -1) : -1 )
+
+                // filter by disposition if set
+                if (dispositionFilter) {
+                    res.data = res.data.filter(animal => {
+                        for (let i=0; i < dispositionFilter.length; i++){
+                            if (!animal.disposition.includes(dispositionFilter[i])){
+                                return false
+                            } 
+                        }
+                        return true
+                    })
+                }
+                
+                setData(res.data)
+
+                if (fetchID >= data.length) {
+                    fetchID = 0
+                }
+                if (fetchID === -1) {
+                    fetchID = data.length - 1
+                }
+                
+                setAnimal(data[fetchID])
+                setIndex(fetchID)
+                setAdoptSuccess(false)
+                setAdoptFail(false)
+            }
+            await fetchFilterNewAnimal(fetchID);
+            setDisableButtons(prevState => !prevState) // enable button
+        } catch (err) {
+            console.log(err);
+            setDisableButtons(prevState => !prevState) // enable button
         }
     }
 
     return (
         <>
             <Container>
-                <AdoptionSearchBar/>
+                <AdoptionSearchBar handleSearch={handleSearch} />
+                {searchFilter && <Typography>Filter By: {typeFilter && <span>{typeFilter}.</span>} {breedFilter && <span>{breedFilter}.</span>} {dispositionFilter && dispositionFilter.map((disposition) => (<span>{disposition}. </span>))} {dateFilter && <span>{dateFilter}.</span>}</Typography>}
+                {searchFilter && <Button color="primary" variant="contained" onClick={() => window.location.reload()}>Clear Filters</Button>}
                 <Grid container justifyContent="space-around" sx={{marginTop: 2}}>
                     <Grid item>
-                        {!animal && <div style={{display: 'flex', justifyContent: 'center'}}><CircularProgress/></div>}
+                        {(!animal && searchFilter === false) && <div style={{display: 'flex', justifyContent: 'center'}}><CircularProgress/></div>}
+                        {(!animal && searchFilter === true) && <div style={{display: 'flex', justifyContent: 'center'}}>No Result</div>}
                         {animal && <AdoptionCard {...animal} handleAdoptClick={handleAdoptClick}/>}
                     </Grid>
                 </Grid>
                 <Grid container justifyContent="center" sx={{marginTop: 1}}>
                     <Grid item sx={{marginRight: 2}}>
-                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index - 1)}>
+                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => searchFilter ? handleFilterClick(index-1) : handleClick(index - 1)}>
                             <ChevronLeftIcon sx={{color: "white"}}/>
                         </Button>}
                     </Grid>
                     <Grid item sx={{marginLeft: 2}}>
-                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => handleClick(index + 1)}>
+                        {animal && <Button sx={buttonStyle} disabled={disableButtons} onClick={() => searchFilter ? handleFilterClick(index + 1) : handleClick(index + 1)}>
                             <ChevronRightIcon sx={{color: "white"}}/>
                         </Button>}
                     </Grid>

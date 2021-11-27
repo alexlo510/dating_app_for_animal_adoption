@@ -30,7 +30,9 @@ const MenuProps = {
   },
 };
 
-export default function AdoptionSearchBar() {
+export default function AdoptionSearchBar(props) {
+
+    const {handleSearch} = props
 
     const [type, setType] = useState('')
     const [breed, setBreed] = useState('')
@@ -38,19 +40,19 @@ export default function AdoptionSearchBar() {
     const [date, setDate] = useState('')
 
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+    // const handleSubmit = (e) => {
+    //     e.preventDefault()
 
-        // change disposition to an object?
-        // let dispositionObject = {}
-        // dispositions.forEach((key) => {
-        //     disposition.includes(key) ? dispositionObject[key] = true : dispositionObject[key] = false
-        // });
-        // console.log(dispositionObject);
+    //     // change disposition to an object?
+    //     // let dispositionObject = {}
+    //     // dispositions.forEach((key) => {
+    //     //     disposition.includes(key) ? dispositionObject[key] = true : dispositionObject[key] = false
+    //     // });
+    //     // console.log(dispositionObject);
 
-        console.log({type, breed, disposition, date});
-        // call a function on the adopt page, passing in these parameters? 
-    }
+    //     console.log({type, breed, disposition, date});
+    //     // call a function on the adopt page, passing in these parameters? 
+    // }
 
     const handleDisposition = (event) => {
         const {
@@ -146,7 +148,7 @@ export default function AdoptionSearchBar() {
                             }}
                             onChange={(e) => setDate(e.target.value)}
                         />
-                        <Button type="submit" color="primary" variant="contained" sx={buttonStyle} onClick={handleSubmit}>Search</Button>
+                        <Button color="primary" variant="contained" sx={buttonStyle} onClick={() => handleSearch(type, breed, disposition, date)}>Search</Button>
                     </Grid>
             </Grid>
         </>

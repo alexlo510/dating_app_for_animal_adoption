@@ -5,8 +5,23 @@ export const animalTypes = [
 ]
 
 export const animalBreeds = [
-    "Corgi",
-    "Tabby",
+    "American Shorthair", // cat
+    "Beagle", // dog
+    "Bengal", // cat
+    "Birman", // cat
+    "British Shorthair", // cat
+    "Bulldog", // dog
+    "Chihuahua", // dog
+    "Corgi", // dog
+    "Golden Retriever", // dog
+    "German Shepard", // dog
+    "Labrador Retriever", // dog
+    "Maine Coon", // cat
+    "Persian", // cat
+    "Poodle", // dog
+    "Ragdoll", // cat
+    "Siberian Husky", // dog
+    "Siamese", // cat
     "Other",
 ]
 

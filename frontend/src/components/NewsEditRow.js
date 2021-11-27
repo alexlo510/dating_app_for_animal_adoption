@@ -1,5 +1,7 @@
 import { Button, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select } from '@mui/material/';
 import React from 'react';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
 
 
 const EditableRow = ({
@@ -7,9 +9,15 @@ const EditableRow = ({
     handleChange,
     handleCancelClick,
 }) => {
+    const fileInput = React.useRef(null);
+
+    const handleReplaceImageButtonClick = event => {
+        fileInput.current.click();
+    };
+
     return (
-        <tr>
-            <td>
+        <TableRow>
+            <TableCell>
                 <input
                     required
                     type="text"
@@ -18,8 +26,8 @@ const EditableRow = ({
                     value={formData.title}
                     onChange={handleChange}
                 ></input>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
                 <input
                     required
                     type="text"
@@ -28,22 +36,42 @@ const EditableRow = ({
                     value={formData.content}
                     onChange={handleChange}
                 ></input>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
                 <input
+                    disabled  // added disabled
                     required
                     type="text"
-                    placeholder="Enter a URL..."
+                    placeholder=""
                     name="news_url"
                     value={formData.news_url}
                     onChange={handleChange}
                 ></input>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
+                <label htmlFor="replace_image">
+                    <input
+                        style={{ display: 'none' }}
+                        ref={fileInput}
+                        id="replace_image"
+                        name="file"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleChange}
+                    />
+                    <button
+                        type="button"
+                        onClick={handleReplaceImageButtonClick}>
+                        Replace Image
+                    </button>
+                    {formData.file && <span>{formData.file.name}</span>}
+                </label>
+            </TableCell>
+            <TableCell>
                 <button type="submit">Save</button>
                 <button type="button" onClick={handleCancelClick}>Cancel</button>
-            </td>
-        </tr>
+            </TableCell>
+        </TableRow >
     );
 };
 

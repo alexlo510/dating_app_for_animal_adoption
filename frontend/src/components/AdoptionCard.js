@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material/';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
+import { useUserContext } from './UserContext.js';
 import { dispositions } from '../components/ProfilePropertiesLists.js';
 
 const buttonStyle = {
@@ -18,7 +19,8 @@ const buttonStyle = {
 
 export default function AdoptionCard(props) {
     const{ name, description, type, breed, disposition, availability, id, picture_url, handleAdoptClick} = props
-    console.log(disposition);
+    const { user } = useUserContext();
+  
     return (
         <Card sx={{}}>
             {picture_url !== "" ? <CardMedia component="img" image={picture_url} sx={{objectFit: "scale-down", maxHeight:300}}/> : null}
@@ -46,7 +48,7 @@ export default function AdoptionCard(props) {
                 </Typography>
             </CardContent>
             <CardActions>
-                {availability ? (availability.toLowerCase() === "available" ?
+                {availability ? ((availability.toLowerCase() === "available" && user) ?
                 <Button size="small" sx={buttonStyle} onClick={() => handleAdoptClick(id)}>
                     <Typography variant="body1" color="white">Adopt</Typography>
                 </Button>
