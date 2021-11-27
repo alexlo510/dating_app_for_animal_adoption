@@ -85,7 +85,19 @@ export default function AdminPets() {
             event.preventDefault();
 
             let fieldValue = "";
-            const fieldName = event.target.getAttribute("name");
+            let fieldName = "";
+            if (event.target.name === "type"){
+                fieldName = "type"
+            } else if (event.target.name === "breed") {
+                fieldName = "breed"
+            } else if (event.target.name === "disposition") {
+                fieldName = "disposition"
+            } else if (event.target.name === "availability") {
+                fieldName = "availability"
+            } else {
+                fieldName = event.target.getAttribute("name");
+            }
+
             if (fieldName === "file") {
                 fieldValue = event.target.files[0]
             } else {
