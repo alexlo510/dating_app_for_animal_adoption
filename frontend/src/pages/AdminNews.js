@@ -309,7 +309,7 @@ export default function Admin() {
                     />
                     <br />
                     <input
-                        //required
+                        required
                         type="file"
                         name="file"
                         accept="image/*"
